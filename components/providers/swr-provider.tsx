@@ -6,8 +6,7 @@ const SwrProvider: React.FC<PropsWithChildren> = ({ children }) => {
         <SWRConfig
             value={{
                 loadingTimeout: 5000,
-                shouldRetryOnError: false,
-                revalidateOnFocus: false
+                shouldRetryOnError: false
             }}
         >
             {children}

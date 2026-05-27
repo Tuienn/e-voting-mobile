@@ -60,7 +60,7 @@ function CardFooter({
   className,
   ...props
 }: React.ComponentProps<typeof View> & React.RefAttributes<View>) {
-  return <View className={cn('flex flex-row items-center px-6', className)} {...props} />;
+  return <View className={cn('flex flex-row items-center gap-2 px-6', className)} {...props} />;
 }
 
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle };

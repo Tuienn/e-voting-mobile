@@ -1,4 +1,4 @@
-import CustomTabBar from '@/components/pages/(main)/custom-tab-bar'
+import CustomTabBar from '@/components/common/custom-tab-bar'
 import { ScrollDirectionProvider } from '@/components/providers/scroll-direction-provider'
 
 import { useScrollDirection } from '@/hooks/use-scroll-direction'

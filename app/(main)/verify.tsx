@@ -15,7 +15,6 @@ const VerifyScreen: React.FC = () => {
 
     return (
         <Animated.ScrollView
-            className='flex-1'
             style={styles.container}
             contentContainerStyle={{ padding: 20, paddingBottom: 120 }}
             onScroll={scrollHandler}

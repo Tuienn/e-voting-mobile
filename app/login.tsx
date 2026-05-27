@@ -5,7 +5,7 @@ import { Icon } from '@/components/ui/icon'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Text } from '@/components/ui/text'
-import { LogInIcon, ShieldIcon } from 'lucide-react-native'
+import { LogInIcon, ScanQrCodeIcon, ShieldIcon } from 'lucide-react-native'
 import { View, Image } from 'react-native'
 import { useState } from 'react'
 import useSWRMutation from 'swr/mutation'
@@ -104,7 +104,7 @@ const LoginScreen: React.FC = () => {
                             <Label htmlFor='email'>Email *</Label>
                             <Input
                                 id='email'
-                                placeholder='Nhập email của bạn'
+                                placeholder='Nhập email'
                                 keyboardType='email-address'
                                 autoCapitalize='none'
                                 value={email}
@@ -116,7 +116,7 @@ const LoginScreen: React.FC = () => {
                             </Label>
                             <Input
                                 id='password'
-                                placeholder='Nhập mật khẩu của bạn'
+                                placeholder='Nhập mật khẩu'
                                 secureTextEntry
                                 value={password}
                                 onChangeText={setPassword}
@@ -132,6 +132,17 @@ const LoginScreen: React.FC = () => {
                     >
                         <Text>Đăng nhập</Text>
                         <Icon as={LogInIcon} />
+                    </Button>
+
+                    <View className='flex-row items-center gap-4'>
+                        <View className='bg-border h-px flex-1' />
+                        <Text className='text-muted-foreground text-sm'>Thao tác khác</Text>
+                        <View className='bg-border h-px flex-1' />
+                    </View>
+
+                    <Button variant='outline' className='block' size={'lg'}>
+                        <Icon as={ScanQrCodeIcon} />
+                        <Text>Xác minh</Text>
                     </Button>
 
                     <View className='flex-row items-center justify-center gap-1'>

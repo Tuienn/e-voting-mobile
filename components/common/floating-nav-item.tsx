@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { StyleSheet, View, type LayoutChangeEvent } from 'react-native'
 import Animated, { useAnimatedStyle, withTiming, Easing, useSharedValue, interpolate } from 'react-native-reanimated'
-import { Button } from '../../ui/button'
-import { Text } from '../../ui/text'
+import { Button } from '../ui/button'
+import { Text } from '../ui/text'
 
 export type NavItem = {
     key: string
