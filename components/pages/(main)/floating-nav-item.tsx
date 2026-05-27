@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { StyleSheet, type LayoutChangeEvent } from 'react-native'
+import { StyleSheet, View, type LayoutChangeEvent } from 'react-native'
 import Animated, { useAnimatedStyle, withTiming, Easing, useSharedValue, interpolate } from 'react-native-reanimated'
 import { Button } from '../../ui/button'
 import { Text } from '../../ui/text'
@@ -60,22 +60,23 @@ const FloatingNavItem: React.FC<FloatingNavItemProps> = ({ item }) => {
                 onPress={item.onPress}
                 className='bg-primary-foreground active:bg-primary-foreground/90 absolute inset-0 gap-0 overflow-hidden rounded-full px-0'
             >
-                {item.icon}
+                <View pointerEvents='none'>{item.icon}</View>
                 <Animated.View style={[labelStyle]} className='overflow-hidden'>
                     <Text numberOfLines={1} className='text-primary'>
                         {item.label}
                     </Text>
                 </Animated.View>
             </Button>
-            <Text pointerEvents='none' className='absolute opacity-0' onLayout={handleLabelLayout}>
-                {item.label}
-            </Text>
+            <View pointerEvents='none' className='absolute opacity-0' onLayout={handleLabelLayout}>
+                <Text numberOfLines={1}>{item.label}</Text>
+            </View>
         </Animated.View>
     )
 }
 
 const styles = StyleSheet.create({
     buttonFrame: {
+        position: 'relative',
         height: ICON_BUTTON_WIDTH,
         overflow: 'hidden'
     }

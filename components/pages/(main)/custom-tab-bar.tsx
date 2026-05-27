@@ -3,17 +3,21 @@ import { ScanQrCodeIcon, VoteIcon } from 'lucide-react-native'
 import FloatingNavBar from './floating-nav-bar'
 import { SharedValue } from 'react-native-reanimated'
 import { NavItem } from './floating-nav-item'
+import { THEME } from '@/lib/theme'
+import { useUniwind } from 'uniwind'
 
 interface Props extends BottomTabBarProps {
     navVisible: SharedValue<number>
 }
 
-const ROUTE_ICONS: Record<string, { icon: React.ReactNode; label: string }> = {
-    election: { icon: <VoteIcon />, label: 'Trang chủ' },
-    verify: { icon: <ScanQrCodeIcon />, label: 'Quét mã' }
-}
-
 const CustomTabBar: React.FC<Props> = ({ state, navigation, navVisible }) => {
+    const { theme } = useUniwind()
+
+    const ROUTE_ICONS: Record<string, { icon: React.ReactNode; label: string }> = {
+        election: { icon: <VoteIcon color={THEME[theme].primary} />, label: 'Bỏ phiếu' },
+        verify: { icon: <ScanQrCodeIcon color={THEME[theme].primary} />, label: 'Quét mã' }
+    }
+
     const activeRoute = state.routes[state.index]
 
     const items: NavItem[] = state.routes.map((route) => {

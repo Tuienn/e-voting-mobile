@@ -1,4 +1,4 @@
-import { View, StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import Animated, { SharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import FloatingNavItem, { NavItem, TIMING_CONFIG } from './floating-nav-item'
@@ -19,10 +19,13 @@ const FloatingNavBar: React.FC<Props> = ({ navVisible, items }) => {
 
     return (
         <Animated.View
-            style={[styles.wrapper, { bottom: Math.max(insets.bottom, 16) + 8 }, animStyle]}
             pointerEvents='box-none'
+            style={[styles.wrapper, { paddingBottom: Math.max(insets.bottom, 16) + 8 }, animStyle]}
         >
-            <View className='bg-foreground/70 flex-row items-center gap-2 rounded-full p-2 shadow-lg backdrop-blur-sm'>
+            <View
+                pointerEvents='box-none'
+                className='bg-foreground/70 flex-row items-center gap-2 rounded-full p-2 shadow-lg backdrop-blur-sm'
+            >
                 {items.map((item) => (
                     <FloatingNavItem key={item.key} item={item} />
                 ))}
@@ -36,8 +39,10 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        alignItems: 'center',
-        zIndex: 100
+        bottom: -20,
+        zIndex: 100,
+        elevation: 100,
+        alignItems: 'center'
     }
 })
 

@@ -1,5 +1,5 @@
 import { clearAuthToken, getAccessToken, getRefreshToken, saveAccessToken, saveRefreshToken } from '@/lib/secure-store'
-import React, { createContext, ReactNode, useState, useEffect } from 'react'
+import React, { createContext, useState, useEffect, PropsWithChildren } from 'react'
 import { UserSession } from '@/types/auth'
 import AuthService from '@/services/bff/auth.service'
 import useSWRMutation from 'swr/mutation'
@@ -14,11 +14,7 @@ export interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-interface AuthProviderProps {
-    children: ReactNode
-}
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const [user, setUser] = useState<UserSession | null>(null)
 
     useEffect(() => {

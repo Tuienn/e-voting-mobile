@@ -1,10 +1,7 @@
+import { PropsWithChildren } from 'react'
 import { SWRConfig } from 'swr'
 
-interface Props {
-    children: React.ReactNode
-}
-
-const SwrProvider: React.FC<Props> = (props) => {
+const SwrProvider: React.FC<PropsWithChildren> = ({ children }) => {
     return (
         <SWRConfig
             value={{
@@ -13,7 +10,7 @@ const SwrProvider: React.FC<Props> = (props) => {
                 revalidateOnFocus: false
             }}
         >
-            {props.children}
+            {children}
         </SWRConfig>
     )
 }
