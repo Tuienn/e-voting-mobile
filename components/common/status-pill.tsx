@@ -17,7 +17,7 @@ const StatusPill: React.FC<Props> = ({ count, label, active, onPress, icon }) =>
         <Pressable
             onPress={onPress}
             className={cn(
-                'min-w-32 flex-1 rounded-2xl border-[0.5px] p-4',
+                'min-w-32 flex-1 rounded-lg border-[0.5px] p-4',
                 active ? 'bg-primary' : 'bg-primary-foreground'
             )}
         >

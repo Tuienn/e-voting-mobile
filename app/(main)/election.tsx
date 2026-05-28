@@ -1,16 +1,14 @@
 import LargeNotification from '@/components/common/large-notification'
-import ElectionPill from '@/components/pages/election/election-pill'
-import ElectionSkeleton from '@/components/pages/election/election-skeleton'
-import FlatListHeader from '@/components/pages/election/flatlist-header'
-import { Button } from '@/components/ui/button'
-import { Icon } from '@/components/ui/icon'
-import { Text } from '@/components/ui/text'
+import ElectionPill from '@/components/screens/election/election-pill'
+import ElectionSkeleton from '@/components/screens/election/election-skeleton'
+import FlatListHeader from '@/components/screens/election/flatlist-header'
 import { useScrollDirection } from '@/hooks/use-scroll-direction'
 import ElectionService from '@/services/bff/election.service'
 import { ElectionStatus } from '@/types/election'
-import { ChartColumnIcon, ScanQrCodeIcon, Trash2Icon, VenetianMaskIcon, VoteIcon } from 'lucide-react-native'
+import { router } from 'expo-router'
+import { Trash2Icon } from 'lucide-react-native'
 import { useState } from 'react'
-import { RefreshControl } from 'react-native'
+import { Pressable, RefreshControl } from 'react-native'
 import Animated from 'react-native-reanimated'
 import useSWR from 'swr'
 
@@ -22,46 +20,6 @@ const ElectionScreen: React.FC = () => {
     const queryElectionsByStatus = useSWR(`elections/${statusTab}`, () =>
         ElectionService.getElectionsByStatus(statusTab)
     )
-
-    const getActionButtons = (status: ElectionStatus) => {
-        switch (status) {
-            case 'ACTIVE':
-                return [
-                    <Button key='view' variant={'outline'} size={'sm'} className='flex-1'>
-                        <Icon as={ScanQrCodeIcon} />
-                        <Text>Xác minh</Text>
-                    </Button>,
-                    <Button key='vote' size={'sm'} className='flex-1'>
-                        <Icon as={VoteIcon} />
-                        <Text>Bỏ phiếu</Text>
-                    </Button>
-                ]
-            case 'CLOSED':
-                return [
-                    <Button key='view' variant={'outline'} size={'sm'} className='flex-1'>
-                        <Icon as={ScanQrCodeIcon} />
-                        <Text>Xác minh</Text>
-                    </Button>,
-                    <Button key='reveal' size={'sm'} className='flex-1'>
-                        <Icon as={VenetianMaskIcon} />
-                        <Text>Tiết lộ</Text>
-                    </Button>
-                ]
-            case 'COMPLETED':
-                return [
-                    <Button key='view' variant={'outline'} size={'sm'} className='flex-1'>
-                        <Icon as={ScanQrCodeIcon} />
-                        <Text>Xác minh</Text>
-                    </Button>,
-                    <Button key='results' size={'sm'} className='flex-1'>
-                        <Icon as={ChartColumnIcon} />
-                        <Text>Kết quả</Text>
-                    </Button>
-                ]
-            default:
-                return []
-        }
-    }
 
     return (
         <Animated.FlatList
@@ -86,7 +44,7 @@ const ElectionScreen: React.FC = () => {
             }
             refreshControl={
                 <RefreshControl
-                    refreshing={queryElectionCount.isLoading || queryElectionsByStatus.isLoading}
+                    refreshing={false}
                     onRefresh={() => {
                         queryElectionCount.mutate()
                         queryElectionsByStatus.mutate()
@@ -94,27 +52,30 @@ const ElectionScreen: React.FC = () => {
                 />
             }
             renderItem={({ item }) => (
-                <ElectionPill
-                    startDate={item.startDate}
-                    endDate={item.endDate}
-                    name={item.name}
-                    status={item.status}
-                    candidateCount={item.candidateIds.length}
-                    actions={getActionButtons(item.status)}
-                />
+                <Pressable onPress={() => router.push(`/election/${item.id}`)} className='mb-3'>
+                    <ElectionPill
+                        startDate={item.startDate}
+                        endDate={item.endDate}
+                        name={item.name}
+                        status={item.status}
+                        candidateCount={item.candidateIds.length}
+                    />
+                </Pressable>
             )}
             keyExtractor={(item) => item.id}
             ListEmptyComponent={
-                queryElectionsByStatus.isLoading ? (
-                    <ElectionSkeleton />
-                ) : (
-                    <LargeNotification
-                        title='Chưa có cuộc bầu cử'
-                        description='Không tìm thấy cuộc bầu cử nào ở trạng thái này.'
-                        icon={Trash2Icon}
-                        variant='error'
-                    />
-                )
+                !queryElectionsByStatus.error ? (
+                    queryElectionsByStatus.isLoading ? (
+                        <ElectionSkeleton />
+                    ) : (
+                        <LargeNotification
+                            title='Chưa có cuộc bầu cử'
+                            description='Không tìm thấy cuộc bầu cử nào ở trạng thái này.'
+                            icon={Trash2Icon}
+                            variant='error'
+                        />
+                    )
+                ) : null
             }
         />
     )

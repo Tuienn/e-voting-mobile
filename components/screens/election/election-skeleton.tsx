@@ -3,7 +3,7 @@ import { View } from 'react-native'
 
 const ElectionSkeleton = () => {
     return (
-        <View className='bg-card gap-2 rounded-2xl p-3'>
+        <View className='bg-card gap-2 rounded-lg p-3'>
             <Skeleton className='h-5 w-1/5' />
             <Skeleton className='h-5 w-full' />
             <View className='flex flex-row gap-2'>

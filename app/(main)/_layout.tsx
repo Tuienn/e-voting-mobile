@@ -1,6 +1,5 @@
 import CustomTabBar from '@/components/common/custom-tab-bar'
 import { ScrollDirectionProvider } from '@/components/providers/scroll-direction-provider'
-
 import { useScrollDirection } from '@/hooks/use-scroll-direction'
 import { Tabs } from 'expo-router'
 import { StyleSheet } from 'react-native'
@@ -8,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 const MainLayout: React.FC = () => {
     return (
-        <SafeAreaView className='bg-muted relative' style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <ScrollDirectionProvider>
                 <TabsLayout />
             </ScrollDirectionProvider>

@@ -14,7 +14,7 @@ const CustomTabBar: React.FC<Props> = ({ state, navigation, navVisible }) => {
     const { theme } = useUniwind()
 
     const ROUTE_ICONS: Record<string, { icon: React.ReactNode; label: string }> = {
-        election: { icon: <VoteIcon color={THEME[theme].primary} />, label: 'Bỏ phiếu' },
+        election: { icon: <VoteIcon color={THEME[theme].primary} />, label: 'Bầu cử' },
         verify: { icon: <ScanQrCodeIcon color={THEME[theme].primary} />, label: 'Quét mã' }
     }
 

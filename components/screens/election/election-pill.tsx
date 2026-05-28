@@ -1,11 +1,11 @@
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ElectionStatus } from '@/types/election'
 import { Text } from '@/components/ui/text'
 import { Badge } from '@/components/ui/badge'
 import { View } from 'react-native'
-import { formatDateTime } from '@/lib/utils'
+import { formatDateTime, randomAvatar } from '@/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 interface Props {
     startDate?: string
@@ -13,7 +13,6 @@ interface Props {
     name: string
     status: ElectionStatus
     candidateCount: number
-    actions?: React.ReactNode[]
 }
 
 const STATUS_MAP: Record<
@@ -29,20 +28,25 @@ const STATUS_MAP: Record<
     COMPLETED: { className: 'bg-blue-500 dark:bg-blue-600', label: 'Hoàn thành' }
 }
 
-const ElectionPill: React.FC<Props> = ({ startDate, endDate, name, status, candidateCount, actions }) => {
+const ElectionPill: React.FC<Props> = ({ startDate, endDate, name, status, candidateCount }) => {
+    //NOTE - Demo render 1 danh sách avatar được memo để tránh render lại khi component re-render
+    const randomAvatars = useMemo(() => {
+        return Array.from({ length: 2 }, () => randomAvatar())
+    }, [])
+
     return (
-        <Card className='mb-3 gap-2 py-4 shadow-md'>
+        <Card className='gap-3 py-4'>
             <CardHeader className='px-4'>
                 <View className='flex-row items-center justify-between gap-2'>
                     <Badge variant={'default'} className={`${STATUS_MAP[status].className}`}>
-                        <Text>{STATUS_MAP[status].label}</Text>
+                        <Text numberOfLines={1}>{STATUS_MAP[status].label}</Text>
                     </Badge>
                     <View className='flex-row'>
                         <Avatar
                             alt='@mrzachnugent'
                             className='border-background web:border-0 web:ring-2 web:ring-background -mr-2 border-2'
                         >
-                            <AvatarImage source={{ uri: 'https://github.com/mrzachnugent.png' }} />
+                            <AvatarImage source={{ uri: randomAvatars[0] }} />
                             <AvatarFallback>
                                 <Text>ZN</Text>
                             </AvatarFallback>
@@ -52,7 +56,7 @@ const ElectionPill: React.FC<Props> = ({ startDate, endDate, name, status, candi
                             alt='@evilrabbit'
                             className='border-background web:border-0 web:ring-2 web:ring-background -mr-2 border-2'
                         >
-                            <AvatarImage source={{ uri: 'https://github.com/evilrabbit.png' }} />
+                            <AvatarImage source={{ uri: randomAvatars[1] }} />
                             <AvatarFallback>
                                 <Text>ER</Text>
                             </AvatarFallback>
@@ -71,7 +75,6 @@ const ElectionPill: React.FC<Props> = ({ startDate, endDate, name, status, candi
                     {name}
                 </CardTitle>
             </CardHeader>
-
             <CardContent className='px-4'>
                 <View className='flex-row gap-2'>
                     <View className='flex-1'>
@@ -93,7 +96,6 @@ const ElectionPill: React.FC<Props> = ({ startDate, endDate, name, status, candi
                     </View>
                 </View>
             </CardContent>
-            {actions && <CardFooter className='px-4'>{actions.map((action) => action)}</CardFooter>}
         </Card>
     )
 }

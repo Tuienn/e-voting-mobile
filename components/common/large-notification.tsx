@@ -9,18 +9,25 @@ interface Props {
     description?: string
     icon: LucideIcon
     variant?: 'default' | 'error' | 'success' | 'warning'
+    hasBackground?: boolean
 }
 
 const VARIANT_COLORS: Record<NonNullable<Props['variant']>, string> = {
     default: 'bg-muted',
-    error: 'bg-red-500',
-    success: 'bg-green-500',
-    warning: 'bg-yellow-500'
+    error: 'bg-red-500 dark:bg-red-600',
+    success: 'bg-green-500 dark:bg-green-600',
+    warning: 'bg-yellow-500 dark:bg-yellow-600'
 }
 
-const LargeNotification: React.FC<Props> = ({ title, description, icon, variant = 'default' }) => {
+const LargeNotification: React.FC<Props> = ({
+    title,
+    description,
+    icon,
+    variant = 'default',
+    hasBackground = true
+}) => {
     return (
-        <View className='bg-card items-center gap-2 rounded-2xl p-3'>
+        <View className={cn('items-center gap-2 rounded-lg p-3', hasBackground && 'bg-card shadow-sm shadow-black/5')}>
             <View className={cn('rounded-full p-4', VARIANT_COLORS[variant])}>
                 <Icon as={icon} size={25} className='text-white' />
             </View>

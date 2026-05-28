@@ -10,3 +10,21 @@ export function formatDateTime(dateTime: string) {
         timeZone: 'Asia/Ho_Chi_Minh'
     })
 }
+
+const AVATARS = [
+    'https://github.com/mrzachnugent.png',
+    'https://github.com/shadcn.png',
+    'https://github.com/Tuienn.png',
+    'https://github.com/torvalds.png',
+    'https://github.com/sindresorhus.png',
+    'https://github.com/yyx990803.png',
+    'https://github.com/antfu.png',
+    'https://github.com/rauchg.png',
+    'https://github.com/evilrabbit.png',
+    'https://github.com/facebook.png',
+    'https://github.com/google.png',
+    'https://github.com/anthropics.png',
+    'https://github.com/openai.png'
+]
+
+export const randomAvatar = () => AVATARS[Math.floor(Math.random() * AVATARS.length)]

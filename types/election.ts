@@ -17,4 +17,17 @@ export interface Election {
     collectivePublicKey?: string
     startDate?: string
     endDate?: string
+    candidates: {
+        id: string
+        email: string
+        name: string
+    }[]
+
+    vote?: {
+        id: string
+        electionId: string
+        voterId: string
+        blindCommitment: string
+        blockchainRef: string
+    }
 }
