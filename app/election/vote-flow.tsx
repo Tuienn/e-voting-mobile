@@ -1,8 +1,10 @@
 import LargeNotification from '@/components/common/large-notification'
 import ScreenHeader from '@/components/common/screen-header'
 import ProgressSteps from '@/components/screens/election/progress-steps'
+import ReceiptResult from '@/components/screens/receipt/receipt-result'
 import { Alert, AlertTitle } from '@/components/ui/alert'
 import useVoteFlow from '@/hooks/use-vote-flow'
+import { buildReceipt } from '@/lib/receipt-qr'
 import { VoteStep } from '@/types/vote'
 import { useLocalSearchParams } from 'expo-router'
 import { AlertCircleIcon, CheckIcon } from 'lucide-react-native'
@@ -65,6 +67,17 @@ const VoteFlowScreen: React.FC = () => {
                         <Alert variant='destructive' icon={AlertCircleIcon}>
                             <AlertTitle>{voteFlow.error}</AlertTitle>
                         </Alert>
+                    )}
+
+                    {voteFlow.receipt && (
+                        <ReceiptResult
+                            receipt={buildReceipt({
+                                voteId: voteFlow.receipt.id,
+                                electionId: voteFlow.receipt.electionId,
+                                blindedCommitment: voteFlow.receipt.blindedCommitment,
+                                blockchainRef: voteFlow.receipt.blockchainRef
+                            })}
+                        />
                     )}
                 </View>
             </Animated.ScrollView>

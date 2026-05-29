@@ -1,4 +1,5 @@
 import '@/global.css'
+import { Buffer } from 'buffer'
 import { AuthProvider } from '@/components/providers/auth-provider'
 import { NAV_THEME } from '@/lib/theme'
 import { ThemeProvider } from '@react-navigation/native'
@@ -11,6 +12,9 @@ import * as SplashScreen from 'expo-splash-screen'
 import { useAuth } from '@/hooks/use-auth'
 import { useEffect } from 'react'
 import SwrProvider from '@/components/providers/swr-provider'
+
+// NOTE - Polyfill Buffer cho base64url (dùng khi build/parse QR biên lai)
+globalThis.Buffer = globalThis.Buffer ?? Buffer
 
 // Set the animation options. This is optional.
 SplashScreen.setOptions({

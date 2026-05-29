@@ -55,11 +55,11 @@ const useVoteFlow = (electionId: string) => {
                     blindedCommitment
                 })
 
-                await saveVoteParamsSecret(
-                    submitVoteRes.data.id,
-                    scalarToHex(unblinded.h),
-                    scalarToHex(unblinded.sPrime)
-                )
+                await saveVoteParamsSecret(submitVoteRes.data.id, {
+                    h: scalarToHex(unblinded.h),
+                    sPrime: scalarToHex(unblinded.sPrime),
+                    candidateId
+                })
 
                 setReceipt(submitVoteRes.data)
             } catch (err: any) {

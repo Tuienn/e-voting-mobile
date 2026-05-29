@@ -27,7 +27,7 @@ export interface Election {
         id: string
         electionId: string
         voterId: string
-        blindCommitment: string
+        blindedCommitment: string
         blockchainRef: string
     }
 }

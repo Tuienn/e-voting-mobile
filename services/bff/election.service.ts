@@ -13,6 +13,10 @@ export default class ElectionService {
         return await bffApiService<ApiResponse<Election[]>>(`${this.BASE_URL}/me?status=${status}`)
     }
 
+    static async getMyElections() {
+        return await bffApiService<ApiResponse<Election[]>>(`${this.BASE_URL}/me`)
+    }
+
     static async getElectionById(id: string) {
         return await bffApiService<ApiResponse<Election>>(`${this.BASE_URL}/me/${id}`)
     }

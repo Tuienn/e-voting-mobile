@@ -1,44 +1,95 @@
 import BottomSheetModal from '@/components/common/bottom-sheet-modal'
-import FixedCustomTabBar from '@/components/common/fixed-custom-tab-bar'
 import ScreenHeader from '@/components/common/screen-header'
 import CandidateCheckbox from '@/components/screens/election/candidate-checkbox'
 import CandidateSelected from '@/components/screens/election/candidate-selected'
 import ElectionPill from '@/components/screens/election/election-pill'
 import ElectionSkeleton from '@/components/screens/election/election-skeleton'
+import ElectionTabBar from '@/components/screens/election/election-tab-bar'
+import RevealConfirmSheet from '@/components/screens/election/reveal-confirm-sheet'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { Text } from '@/components/ui/text'
-import { THEME } from '@/lib/theme'
+import useRevealVote from '@/hooks/use-reveal-vote'
+import { getVoteParamsSecret, getVoteRevealed } from '@/lib/secure-store'
 import ElectionService from '@/services/bff/election.service'
-import { router } from 'expo-router'
-import { useLocalSearchParams } from 'expo-router'
-import { AlertCircleIcon, ShieldCheckIcon, TerminalIcon, VoteIcon } from 'lucide-react-native'
-import { useMemo, useState } from 'react'
+import { router, useLocalSearchParams } from 'expo-router'
+import { AlertCircleIcon, AlertTriangleIcon, ShieldCheckIcon, TerminalIcon, VoteIcon } from 'lucide-react-native'
+import { useEffect, useMemo, useState } from 'react'
 import { RefreshControl, View } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import useSWR from 'swr'
-import { useUniwind } from 'uniwind'
 
 const ElectionDetailScreen: React.FC = () => {
     const { id } = useLocalSearchParams<{ id: string }>()
-    const { theme } = useUniwind()
     const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null)
-    const [bottomSheetVisible, setBottomSheetVisible] = useState(false)
+    const [voteSheetVisible, setVoteSheetVisible] = useState(false)
+    const [revealSheetVisible, setRevealSheetVisible] = useState(false)
+    const [revealed, setRevealed] = useState(false)
+    const [hasSecret, setHasSecret] = useState(false)
 
     const queryElectionById = useSWR(`election/${id}`, () => ElectionService.getElectionById(id))
 
+    const election = queryElectionById.data?.data
+    const vote = election?.vote
+
+    //NOTE - Nếu đã bỏ phiếu: lấy candidateId từ khoá bí mật để tick sẵn + xác định trạng thái reveal
+    useEffect(() => {
+        if (!vote?.id) {
+            setHasSecret(false)
+            setRevealed(false)
+            return
+        }
+        let active = true
+        ;(async () => {
+            const [secret, isRevealed] = await Promise.all([getVoteParamsSecret(vote.id), getVoteRevealed(vote.id)])
+            if (!active) return
+            setHasSecret(!!secret)
+            setRevealed(isRevealed)
+            if (secret?.candidateId) setSelectedCandidateId(secret.candidateId)
+        })()
+        return () => {
+            active = false
+        }
+    }, [vote?.id])
+
     const candidateSelected = useMemo(() => {
         if (!selectedCandidateId) return null
-        const candidate = queryElectionById.data?.data.candidates.find((c) => c.id === selectedCandidateId)
+        const candidate = election?.candidates.find((c) => c.id === selectedCandidateId)
         if (!candidate) return null
-        return {
-            name: candidate.name,
-            email: candidate.email,
-            id: candidate.id
-        }
-    }, [selectedCandidateId, queryElectionById.data])
+        return { name: candidate.name, email: candidate.email, id: candidate.id }
+    }, [selectedCandidateId, election])
+
+    const { isRevealing, reveal } = useRevealVote()
+
+    const handleVerify = () => {
+        if (!vote) return
+        router.push({
+            pathname: '/election/verify-result',
+            params: {
+                voteId: vote.id,
+                electionId: id,
+                blindedCommitment: vote.blindedCommitment,
+                blockchainRef: vote.blockchainRef
+            }
+        })
+    }
+
+    const handleResults = () => {
+        router.push({ pathname: '/election/result', params: { electionId: id } })
+    }
+
+    const handleReveal = async () => {
+        if (!vote) return
+        await reveal({
+            id: vote.id,
+            electionId: id,
+            blindedCommitment: vote.blindedCommitment,
+            blockchainRef: vote.blockchainRef
+        })
+        setRevealSheetVisible(false)
+    }
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -59,14 +110,14 @@ const ElectionDetailScreen: React.FC = () => {
                                 {queryElectionById.error.message ?? 'Đã xảy ra lỗi khi tải thông tin cuộc bầu cử'}
                             </AlertDescription>
                         </Alert>
-                    ) : queryElectionById.data ? (
+                    ) : election ? (
                         <>
                             <ElectionPill
-                                candidateCount={queryElectionById.data.data.candidateIds.length}
-                                name={queryElectionById.data.data.name}
-                                status={queryElectionById.data.data.status}
-                                startDate={queryElectionById.data.data.startDate}
-                                endDate={queryElectionById.data.data.endDate}
+                                candidateCount={election.candidateIds.length}
+                                name={election.name}
+                                status={election.status}
+                                startDate={election.startDate}
+                                endDate={election.endDate}
                             />
                             <View className='flex-row justify-between'>
                                 <Text variant={'muted'} className='font-semibold uppercase'>
@@ -74,16 +125,25 @@ const ElectionDetailScreen: React.FC = () => {
                                 </Text>
 
                                 <Text variant={'muted'}>
-                                    Đã chọn {selectedCandidateId ? 1 : 0} trên{' '}
-                                    {queryElectionById.data.data.candidateIds.length}
+                                    Đã chọn {selectedCandidateId ? 1 : 0} trên {election.candidateIds.length}
                                 </Text>
                             </View>
 
-                            <Alert icon={TerminalIcon} variant='info'>
-                                <AlertTitle>Chọn tối đa 1 ứng cử viên</AlertTitle>
-                            </Alert>
+                            {vote ? (
+                                <Alert icon={AlertTriangleIcon} variant='warning'>
+                                    <AlertTitle>Bạn đã bỏ phiếu cho cuộc bầu cử này</AlertTitle>
+                                </Alert>
+                            ) : election.status === 'ACTIVE' ? (
+                                <Alert icon={TerminalIcon} variant='info'>
+                                    <AlertTitle>Chọn tối đa 1 ứng cử viên</AlertTitle>
+                                </Alert>
+                            ) : (
+                                <Alert icon={AlertTriangleIcon} variant='warning'>
+                                    <AlertTitle>Bạn chưa bỏ phiếu cho cuộc bầu cử này</AlertTitle>
+                                </Alert>
+                            )}
 
-                            {queryElectionById.data.data.candidates.map((candidate) => (
+                            {election.candidates.map((candidate) => (
                                 <CandidateCheckbox
                                     key={candidate.id}
                                     candidateId={candidate.id}
@@ -91,10 +151,7 @@ const ElectionDetailScreen: React.FC = () => {
                                     email={candidate.email}
                                     isSelected={selectedCandidateId === candidate.id}
                                     onSelect={setSelectedCandidateId}
-                                    disabled={
-                                        queryElectionById.data!.data.status !== 'ACTIVE' ||
-                                        !!queryElectionById.data?.data.vote
-                                    }
+                                    disabled={election.status !== 'ACTIVE' || !!vote}
                                 />
                             ))}
                         </>
@@ -104,21 +161,20 @@ const ElectionDetailScreen: React.FC = () => {
                 </View>
             </Animated.ScrollView>
 
-            {queryElectionById.data && queryElectionById.data.data.status !== 'ACTIVE' ? null : (
-                <FixedCustomTabBar
-                    items={[
-                        {
-                            key: 'vote',
-                            label: 'Bỏ phiếu',
-                            icon: <VoteIcon color={THEME[theme].primary} />,
-                            onPress: () => setBottomSheetVisible(true),
-                            disabled: !selectedCandidateId || !!queryElectionById.data?.data.vote
-                        }
-                    ]}
+            {election && (
+                <ElectionTabBar
+                    election={election}
+                    revealed={revealed}
+                    hasSecret={hasSecret}
+                    voteDisabled={!selectedCandidateId}
+                    onVote={() => setVoteSheetVisible(true)}
+                    onVerify={handleVerify}
+                    onReveal={() => setRevealSheetVisible(true)}
+                    onResults={handleResults}
                 />
             )}
 
-            <BottomSheetModal open={bottomSheetVisible} onClose={() => setBottomSheetVisible(false)}>
+            <BottomSheetModal open={voteSheetVisible} onClose={() => setVoteSheetVisible(false)}>
                 <View className='gap-3 p-4'>
                     <Text className='text-center' variant={'large'}>
                         Xác nhận bỏ phiếu
@@ -148,6 +204,10 @@ const ElectionDetailScreen: React.FC = () => {
                         <Text>Xác nhận bỏ phiếu</Text>
                     </Button>
                 </View>
+            </BottomSheetModal>
+
+            <BottomSheetModal open={revealSheetVisible} onClose={() => setRevealSheetVisible(false)}>
+                <RevealConfirmSheet onConfirm={handleReveal} loading={isRevealing} />
             </BottomSheetModal>
         </SafeAreaView>
     )

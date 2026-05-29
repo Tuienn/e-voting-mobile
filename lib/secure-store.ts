@@ -73,13 +73,19 @@ export const clearAuthToken = async () => {
     await removeDataStorage('refreshToken')
 }
 
+type VoteParamsSecret = {
+    h: string
+    sPrime: string
+    candidateId: string
+}
+
 //NOTE - Vote params secret management
-export const saveVoteParamsSecret = async (voteId: string, h: string, sPrime: string) => {
-    const data = JSON.stringify({ h, sPrime })
+export const saveVoteParamsSecret = async (voteId: string, params: VoteParamsSecret) => {
+    const data = JSON.stringify(params)
     await saveDataStorage(`voteParamsSecret-${voteId}`, data)
 }
 
-export const getVoteParamsSecret = async (voteId: string): Promise<{ h: string; sPrime: string } | null> => {
+export const getVoteParamsSecret = async (voteId: string): Promise<VoteParamsSecret | null> => {
     const data = await getDataStorage(`voteParamsSecret-${voteId}`)
     if (!data) return null
     try {
@@ -91,4 +97,14 @@ export const getVoteParamsSecret = async (voteId: string): Promise<{ h: string; 
 
 export const clearVoteParamsSecret = async (voteId: string) => {
     await removeDataStorage(`voteParamsSecret-${voteId}`)
+}
+
+//NOTE - Đánh dấu phiếu đã được tiết lộ (reveal) trên thiết bị này (API không có field revealed cho từng cử tri)
+export const saveVoteRevealed = async (voteId: string) => {
+    await saveDataStorage(`voteRevealed-${voteId}`, '1')
+}
+
+export const getVoteRevealed = async (voteId: string): Promise<boolean> => {
+    const data = await getDataStorage(`voteRevealed-${voteId}`)
+    return data === '1'
 }
