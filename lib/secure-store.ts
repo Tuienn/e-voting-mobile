@@ -1,10 +1,10 @@
 import * as SecureStore from 'expo-secure-store'
 import { Platform } from 'react-native'
 
-// Xác định đang chạy web hay native
+//NOTE - Xác định đang chạy web hay native
 const isWeb = Platform.OS === 'web'
 
-// Web fallback using localStorage
+//NOTE - Web fallback using localStorage
 const webStorage = {
     setItem: (key: string, value: string) => {
         if (typeof window !== 'undefined') {
@@ -24,9 +24,6 @@ const webStorage = {
     }
 }
 
-/**
- * Hàm lưu dữ liệu
- */
 export const saveDataStorage = async (key: string, value: string) => {
     try {
         if (isWeb) {
@@ -40,9 +37,6 @@ export const saveDataStorage = async (key: string, value: string) => {
     }
 }
 
-/**
- * Hàm lấy dữ liệu
- */
 export const getDataStorage = async (key: string): Promise<string | null> => {
     try {
         if (isWeb) {
@@ -56,9 +50,6 @@ export const getDataStorage = async (key: string): Promise<string | null> => {
     }
 }
 
-/**
- * Hàm xóa dữ liệu
- */
 export const removeDataStorage = async (key: string) => {
     try {
         if (isWeb) {
@@ -71,8 +62,7 @@ export const removeDataStorage = async (key: string) => {
     }
 }
 
-// ================== Token-specific helpers ================== //
-
+//NOTE - Token management
 export const saveAccessToken = (token: string) => saveDataStorage('accessToken', token)
 export const getAccessToken = () => getDataStorage('accessToken')
 export const saveRefreshToken = (token: string) => saveDataStorage('refreshToken', token)
@@ -81,16 +71,16 @@ export const getRefreshToken = () => getDataStorage('refreshToken')
 export const clearAuthToken = async () => {
     await removeDataStorage('accessToken')
     await removeDataStorage('refreshToken')
-    await clearSecretChatKey()
 }
 
-export const saveSecretChatKey = async (secretKey: string, oderId: string) => {
-    const data = JSON.stringify({ secretKey, oderId })
-    await saveDataStorage('secretChatKey', data)
+//NOTE - Vote params secret management
+export const saveVoteParamsSecret = async (voteId: string, h: string, sPrime: string) => {
+    const data = JSON.stringify({ h, sPrime })
+    await saveDataStorage(`voteParamsSecret-${voteId}`, data)
 }
 
-export const getSecretChatKey = async (): Promise<{ secretKey: string; oderId: string } | null> => {
-    const data = await getDataStorage('secretChatKey')
+export const getVoteParamsSecret = async (voteId: string): Promise<{ h: string; sPrime: string } | null> => {
+    const data = await getDataStorage(`voteParamsSecret-${voteId}`)
     if (!data) return null
     try {
         return JSON.parse(data)
@@ -99,6 +89,6 @@ export const getSecretChatKey = async (): Promise<{ secretKey: string; oderId: s
     }
 }
 
-export const clearSecretChatKey = async () => {
-    await removeDataStorage('secretChatKey')
+export const clearVoteParamsSecret = async (voteId: string) => {
+    await removeDataStorage(`voteParamsSecret-${voteId}`)
 }

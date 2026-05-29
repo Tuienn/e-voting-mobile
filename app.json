@@ -1,11 +1,11 @@
 {
     "expo": {
-        "name": "minimal",
-        "slug": "minimal",
+        "name": "evote",
+        "slug": "evote",
         "version": "1.0.0",
         "orientation": "portrait",
         "icon": "./assets/images/icon.png",
-        "scheme": "minimal",
+        "scheme": "evote",
         "userInterfaceStyle": "automatic",
         "splash": {
             "image": "./assets/images/splash.png",
@@ -29,7 +29,8 @@
         },
         "plugins": ["expo-router"],
         "experiments": {
-            "typedRoutes": true
+            "typedRoutes": true,
+            "reactCompiler": true
         }
     }
 }

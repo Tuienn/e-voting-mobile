@@ -1,8 +1,8 @@
-# Minimal Uniwind Template
+# evote Uniwind Template
 
 This is a [React Native](https://reactnative.dev/) project built with [Expo](https://expo.dev/) and [React Native Reusables](https://reactnativereusables.com).
 
-It was initialized using the following command, then the `Minimal (Uniwind)` template was selected when prompted:
+It was initialized using the following command, then the `evote (Uniwind)` template was selected when prompted:
 
 ```bash
 npx @react-native-reusables/cli@latest init

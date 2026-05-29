@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: -5,
-        zIndex: 100,
+        zIndex: 10,
         elevation: 100,
         alignItems: 'center'
     }

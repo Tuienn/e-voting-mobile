@@ -1,19 +1,19 @@
-import { BffResponse } from '@/types/common'
+import { ApiResponse } from '@/types/common'
 import { bffApiService } from '.'
 import { Election, ElectionCount, ElectionStatus } from '@/types/election'
 
 export default class ElectionService {
     private static readonly BASE_URL = '/coordinator/election'
 
-    static getElectionCount = async () => {
-        return await bffApiService<BffResponse<ElectionCount>>(`${this.BASE_URL}/me/count`)
+    static async getElectionCount() {
+        return await bffApiService<ApiResponse<ElectionCount>>(`${this.BASE_URL}/me/count`)
     }
 
-    static getElectionsByStatus = async (status: ElectionStatus) => {
-        return await bffApiService<BffResponse<Election[]>>(`${this.BASE_URL}/me?status=${status}`)
+    static async getElectionsByStatus(status: ElectionStatus) {
+        return await bffApiService<ApiResponse<Election[]>>(`${this.BASE_URL}/me?status=${status}`)
     }
 
-    static getElectionById = async (id: string) => {
-        return await bffApiService<BffResponse<Election>>(`${this.BASE_URL}/me/${id}`)
+    static async getElectionById(id: string) {
+        return await bffApiService<ApiResponse<Election>>(`${this.BASE_URL}/me/${id}`)
     }
 }

@@ -1,11 +1,11 @@
-export interface BffResponse<T> {
+export interface ApiResponse<T> {
     data: T
     message: string
     statusCode: number
     title?: string
 }
 
-export interface BffEmptyResponse {
+export interface ApiEmptyResponse {
     data?: never
     message: string
     statusCode: number

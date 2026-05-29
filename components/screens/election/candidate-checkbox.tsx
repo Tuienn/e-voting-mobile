@@ -1,5 +1,4 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Card, CardContent } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { Text } from '@/components/ui/text'
@@ -22,50 +21,48 @@ const CandidateCheckbox: React.FC<Props> = ({ candidateId, name, email, isSelect
     }, [])
 
     return (
-        <Card
-            className={cn(
-                'border py-4',
-                isSelected ? 'border-primary bg-primary/10' : 'border-border bg-card',
-                disabled && 'opacity-50'
-            )}
+        <Label
+            htmlFor={`candidate-checkbox-${candidateId}`}
+            onPress={Platform.select({
+                native: disabled ? undefined : () => onSelect(candidateId)
+            })}
         >
-            <Label
-                htmlFor={`candidate-checkbox-${candidateId}`}
-                onPress={Platform.select({
-                    native: disabled ? undefined : () => onSelect(candidateId)
-                })}
+            <View
+                className={cn(
+                    'flex-row gap-3 rounded-lg border p-4',
+                    isSelected ? 'border-primary bg-primary/10' : 'border-border bg-card',
+                    disabled && 'opacity-50'
+                )}
             >
-                <CardContent className='flex-row gap-3 px-4'>
-                    <Avatar alt={name} className='border-muted size-10 border-2'>
-                        <AvatarImage
-                            source={{
-                                uri: randomAvatarUrl
-                            }}
-                        />
-
-                        <AvatarFallback>
-                            <Text>
-                                {name
-                                    .split(' ')
-                                    .map((n) => n[0])
-                                    .join('')}
-                            </Text>
-                        </AvatarFallback>
-                    </Avatar>
-                    <View className='flex-1 justify-center'>
-                        <Text className='font-medium'>{name}</Text>
-                        <Text className='text-muted-foreground text-sm'>{email}</Text>
-                    </View>
-                    <Checkbox
-                        checked={isSelected}
-                        onCheckedChange={() => onSelect(candidateId)}
-                        id={`candidate-checkbox-${candidateId}`}
-                        className='my-auto'
-                        disabled={disabled}
+                <Avatar alt={name} className='border-muted size-10 border-2'>
+                    <AvatarImage
+                        source={{
+                            uri: randomAvatarUrl
+                        }}
                     />
-                </CardContent>
-            </Label>
-        </Card>
+
+                    <AvatarFallback>
+                        <Text>
+                            {name
+                                .split(' ')
+                                .map((n) => n[0])
+                                .join('')}
+                        </Text>
+                    </AvatarFallback>
+                </Avatar>
+                <View className='flex-1 justify-center'>
+                    <Text className='font-medium'>{name}</Text>
+                    <Text className='text-muted-foreground text-sm'>{email}</Text>
+                </View>
+                <Checkbox
+                    checked={isSelected}
+                    onCheckedChange={() => onSelect(candidateId)}
+                    id={`candidate-checkbox-${candidateId}`}
+                    className='my-auto'
+                    disabled={disabled}
+                />
+            </View>
+        </Label>
     )
 }
 

@@ -1,15 +1,20 @@
-import BackScreenButton from '@/components/common/back-screen-button'
+import BottomSheetModal from '@/components/common/bottom-sheet-modal'
 import FixedCustomTabBar from '@/components/common/fixed-custom-tab-bar'
+import ScreenHeader from '@/components/common/screen-header'
 import CandidateCheckbox from '@/components/screens/election/candidate-checkbox'
+import CandidateSelected from '@/components/screens/election/candidate-selected'
 import ElectionPill from '@/components/screens/election/election-pill'
 import ElectionSkeleton from '@/components/screens/election/election-skeleton'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
 import { Text } from '@/components/ui/text'
 import { THEME } from '@/lib/theme'
 import ElectionService from '@/services/bff/election.service'
+import { router } from 'expo-router'
 import { useLocalSearchParams } from 'expo-router'
-import { AlertCircleIcon, TerminalIcon, VoteIcon } from 'lucide-react-native'
-import { useState } from 'react'
+import { AlertCircleIcon, ShieldCheckIcon, TerminalIcon, VoteIcon } from 'lucide-react-native'
+import { useMemo, useState } from 'react'
 import { RefreshControl, View } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -18,10 +23,22 @@ import { useUniwind } from 'uniwind'
 
 const ElectionDetailScreen: React.FC = () => {
     const { id } = useLocalSearchParams<{ id: string }>()
-    const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null)
     const { theme } = useUniwind()
+    const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null)
+    const [bottomSheetVisible, setBottomSheetVisible] = useState(false)
 
     const queryElectionById = useSWR(`election/${id}`, () => ElectionService.getElectionById(id))
+
+    const candidateSelected = useMemo(() => {
+        if (!selectedCandidateId) return null
+        const candidate = queryElectionById.data?.data.candidates.find((c) => c.id === selectedCandidateId)
+        if (!candidate) return null
+        return {
+            name: candidate.name,
+            email: candidate.email,
+            id: candidate.id
+        }
+    }, [selectedCandidateId, queryElectionById.data])
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -29,11 +46,11 @@ const ElectionDetailScreen: React.FC = () => {
                 showsVerticalScrollIndicator={false}
                 className='bg-muted'
                 style={{ flex: 1 }}
-                contentContainerStyle={{ padding: 16, paddingBottom: 112 }}
+                contentContainerStyle={{ padding: 16, paddingBottom: 12 }}
                 refreshControl={<RefreshControl refreshing={false} onRefresh={queryElectionById.mutate} />}
             >
                 <View className='gap-3'>
-                    <BackScreenButton />
+                    <ScreenHeader title='Chi tiết cuộc bầu cử' />
 
                     {queryElectionById.error ? (
                         <Alert variant='destructive' icon={AlertCircleIcon}>
@@ -62,7 +79,7 @@ const ElectionDetailScreen: React.FC = () => {
                                 </Text>
                             </View>
 
-                            <Alert icon={TerminalIcon} className='border-blue-300'>
+                            <Alert icon={TerminalIcon} variant='info'>
                                 <AlertTitle>Chọn tối đa 1 ứng cử viên</AlertTitle>
                             </Alert>
 
@@ -74,7 +91,10 @@ const ElectionDetailScreen: React.FC = () => {
                                     email={candidate.email}
                                     isSelected={selectedCandidateId === candidate.id}
                                     onSelect={setSelectedCandidateId}
-                                    disabled={queryElectionById.data!.data.status !== 'ACTIVE'}
+                                    disabled={
+                                        queryElectionById.data!.data.status !== 'ACTIVE' ||
+                                        !!queryElectionById.data?.data.vote
+                                    }
                                 />
                             ))}
                         </>
@@ -91,12 +111,44 @@ const ElectionDetailScreen: React.FC = () => {
                             key: 'vote',
                             label: 'Bỏ phiếu',
                             icon: <VoteIcon color={THEME[theme].primary} />,
-                            onPress: () => {},
-                            disabled: !selectedCandidateId
+                            onPress: () => setBottomSheetVisible(true),
+                            disabled: !selectedCandidateId || !!queryElectionById.data?.data.vote
                         }
                     ]}
                 />
             )}
+
+            <BottomSheetModal open={bottomSheetVisible} onClose={() => setBottomSheetVisible(false)}>
+                <View className='gap-3 p-4'>
+                    <Text className='text-center' variant={'large'}>
+                        Xác nhận bỏ phiếu
+                    </Text>
+                    <Text className='text-center' variant={'muted'}>
+                        Sau khi gửi phiếu bạn sẽ nhận lại biên lai để xác minh phiếu bầu
+                    </Text>
+                    {candidateSelected && (
+                        <CandidateSelected name={candidateSelected.name} email={candidateSelected.email} />
+                    )}
+                    <Alert icon={ShieldCheckIcon} variant='success'>
+                        <AlertTitle>Lá phiếu sẽ được mã hoá và ghi lên blockchain.</AlertTitle>
+                    </Alert>
+
+                    <Button
+                        onPress={() =>
+                            router.replace({
+                                pathname: '/election/vote-flow',
+                                params: {
+                                    electionId: id,
+                                    candidateId: selectedCandidateId
+                                }
+                            })
+                        }
+                    >
+                        <Icon as={VoteIcon} />
+                        <Text>Xác nhận bỏ phiếu</Text>
+                    </Button>
+                </View>
+            </BottomSheetModal>
         </SafeAreaView>
     )
 }

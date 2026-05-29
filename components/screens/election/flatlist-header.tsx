@@ -3,7 +3,7 @@ import ThemeToggle from '@/components/common/theme-toggle'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Text } from '@/components/ui/text'
-import { BffResponse } from '@/types/common'
+import { ApiResponse } from '@/types/common'
 import { Election, ElectionCount, ElectionStatus } from '@/types/election'
 import { ActivityIcon, AlertCircleIcon, CalendarCheckIcon, ClipboardClockIcon, CopyXIcon } from 'lucide-react-native'
 import { ScrollView, View } from 'react-native'
@@ -12,8 +12,8 @@ import { SWRResponse } from 'swr'
 interface Props {
     statusTab: ElectionStatus
     onChangeStatusTab: (status: ElectionStatus) => void
-    queryElectionCount: SWRResponse<BffResponse<ElectionCount>, any, any>
-    queryElectionsByStatus: SWRResponse<BffResponse<Election[]>, any, any>
+    queryElectionCount: SWRResponse<ApiResponse<ElectionCount>, any, any>
+    queryElectionsByStatus: SWRResponse<ApiResponse<Election[]>, any, any>
 }
 
 const FlatListHeader: React.FC<Props> = ({
