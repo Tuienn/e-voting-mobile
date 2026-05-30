@@ -1,4 +1,4 @@
-import { getVoteParamsSecret, saveVoteRevealed } from '@/lib/secure-store'
+import { clearVoteParamsSecret, saveVoteStatus } from '@/lib/secure-store'
 import RevealService from '@/services/reveal/reveal.service'
 import { router } from 'expo-router'
 import { useCallback, useState } from 'react'
@@ -11,15 +11,20 @@ type RevealableVote = {
     blockchainRef: string
 }
 
-const useRevealVote = () => {
+type RevealVoteParams = {
+    h?: string
+    sPrime?: string
+    candidateId?: string
+}
+
+const useRevealVote = (params: RevealVoteParams) => {
     const [isRevealing, setIsRevealing] = useState(false)
 
     const reveal = useCallback(async (vote: RevealableVote) => {
         try {
             setIsRevealing(true)
 
-            const secret = await getVoteParamsSecret(vote.id)
-            if (!secret) {
+            if (!params.h || !params.sPrime) {
                 Toast.show({
                     type: 'error',
                     text1: 'Không tìm thấy khoá bí mật',
@@ -28,13 +33,29 @@ const useRevealVote = () => {
                 return
             }
 
+            if (!params.candidateId) {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Không xác định được ứng cử viên đã chọn',
+                    text2: 'Thông tin ứng cử viên đã chọn không hợp lệ, không thể tiết lộ.'
+                })
+                return
+            }
+
+            //SECTION - Tiết lộ phiếu
             await RevealService.revealVote(vote.electionId, {
-                candidateId: secret.candidateId,
-                h: secret.h,
-                sPrime: secret.sPrime
+                candidateId: params.candidateId,
+                h: params.h,
+                sPrime: params.sPrime
             })
 
-            await saveVoteRevealed(vote.id)
+            //SECTION - Sau khi tiết lộ thành công: xoá khoá bí mật + đánh dấu đã reveal
+            await clearVoteParamsSecret(vote.id)
+
+            await saveVoteStatus(vote.id, {
+                candidateId: params.candidateId,
+                revealed: true
+            })
 
             router.replace({
                 pathname: '/election/verify-result',

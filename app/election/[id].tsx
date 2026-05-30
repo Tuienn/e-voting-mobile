@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { Text } from '@/components/ui/text'
 import useRevealVote from '@/hooks/use-reveal-vote'
-import { getVoteParamsSecret, getVoteRevealed } from '@/lib/secure-store'
+import { getVoteParamsSecret, getVoteStatus } from '@/lib/secure-store'
 import ElectionService from '@/services/bff/election.service'
 import { router, useLocalSearchParams } from 'expo-router'
 import { AlertCircleIcon, AlertTriangleIcon, ShieldCheckIcon, TerminalIcon, VoteIcon } from 'lucide-react-native'
@@ -20,15 +20,15 @@ import { RefreshControl, View } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import useSWR from 'swr'
+import { VoteParamsSecret, VoteStatus } from '../../types/reveal'
 
 const ElectionDetailScreen: React.FC = () => {
     const { id } = useLocalSearchParams<{ id: string }>()
     const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null)
     const [voteSheetVisible, setVoteSheetVisible] = useState(false)
     const [revealSheetVisible, setRevealSheetVisible] = useState(false)
-    const [revealed, setRevealed] = useState(false)
-    const [hasSecret, setHasSecret] = useState(false)
-
+    const [voteParamsSecret, setVoteParamsSecret] = useState<VoteParamsSecret | null>(null)
+    const [voteStatus, setVoteStatus] = useState<VoteStatus | null>(null)
     const queryElectionById = useSWR(`election/${id}`, () => ElectionService.getElectionById(id))
 
     const election = queryElectionById.data?.data
@@ -37,17 +37,17 @@ const ElectionDetailScreen: React.FC = () => {
     //NOTE - Nếu đã bỏ phiếu: lấy candidateId từ khoá bí mật để tick sẵn + xác định trạng thái reveal
     useEffect(() => {
         if (!vote?.id) {
-            setHasSecret(false)
-            setRevealed(false)
+            setVoteParamsSecret(null)
+            setVoteStatus(null)
             return
         }
         let active = true
         ;(async () => {
-            const [secret, isRevealed] = await Promise.all([getVoteParamsSecret(vote.id), getVoteRevealed(vote.id)])
+            const [secret, voteStatus] = await Promise.all([getVoteParamsSecret(vote.id), getVoteStatus(vote.id)])
             if (!active) return
-            setHasSecret(!!secret)
-            setRevealed(isRevealed)
-            if (secret?.candidateId) setSelectedCandidateId(secret.candidateId)
+            setVoteParamsSecret(secret)
+            setVoteStatus(voteStatus)
+            if (voteStatus?.candidateId) setSelectedCandidateId(voteStatus.candidateId)
         })()
         return () => {
             active = false
@@ -61,7 +61,11 @@ const ElectionDetailScreen: React.FC = () => {
         return { name: candidate.name, email: candidate.email, id: candidate.id }
     }, [selectedCandidateId, election])
 
-    const { isRevealing, reveal } = useRevealVote()
+    const { isRevealing, reveal } = useRevealVote({
+        h: voteParamsSecret?.h,
+        sPrime: voteParamsSecret?.sPrime,
+        candidateId: voteStatus?.candidateId
+    })
 
     const handleVerify = () => {
         if (!vote) return
@@ -76,7 +80,7 @@ const ElectionDetailScreen: React.FC = () => {
         })
     }
 
-    const handleResults = () => {
+    const handleViewResult = () => {
         router.push({ pathname: '/election/result', params: { electionId: id } })
     }
 
@@ -164,13 +168,13 @@ const ElectionDetailScreen: React.FC = () => {
             {election && (
                 <ElectionTabBar
                     election={election}
-                    revealed={revealed}
-                    hasSecret={hasSecret}
+                    revealed={!!voteStatus?.revealed}
+                    hasSecret={!!voteParamsSecret}
                     voteDisabled={!selectedCandidateId}
                     onVote={() => setVoteSheetVisible(true)}
                     onVerify={handleVerify}
                     onReveal={() => setRevealSheetVisible(true)}
-                    onResults={handleResults}
+                    onViewResult={handleViewResult}
                 />
             )}
 

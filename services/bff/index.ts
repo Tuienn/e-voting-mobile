@@ -7,7 +7,8 @@ const LOGIN_PATH = '/identity/auth/sign-in'
 export const bffApiService = async <T = any>(url: string, options?: RequestInit, _retried = false): Promise<T> => {
     const token = await getAccessToken().catch(() => undefined)
     const defaultHeaders = {
-        Accept: 'application/json'
+        Accept: 'application/json',
+        'x-client-platform': 'mobile'
     }
 
     const mergedHeaders = new Headers({

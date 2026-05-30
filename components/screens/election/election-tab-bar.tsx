@@ -12,7 +12,7 @@ interface Props {
     onVote: () => void
     onVerify: () => void
     onReveal: () => void
-    onResults: () => void
+    onViewResult: () => void
 }
 
 const ElectionTabBar: React.FC<Props> = ({
@@ -23,7 +23,7 @@ const ElectionTabBar: React.FC<Props> = ({
     onVote,
     onVerify,
     onReveal,
-    onResults
+    onViewResult
 }) => {
     const { theme } = useUniwind()
     const color = THEME[theme].primary
@@ -40,7 +40,7 @@ const ElectionTabBar: React.FC<Props> = ({
         key: 'results',
         label: 'Kết quả',
         icon: <ChartColumnBigIcon color={color} />,
-        onPress: onResults
+        onPress: onViewResult
     }
     const revealItem: FixedCustomTabBarItem = {
         key: 'reveal',

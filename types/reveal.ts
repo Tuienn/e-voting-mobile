@@ -24,3 +24,13 @@ export interface TallyResult {
     chainRevealTotal: number
     chainError: string | null
 }
+
+export interface VoteParamsSecret {
+    h: string
+    sPrime: string
+}
+
+export interface VoteStatus {
+    candidateId: string
+    revealed: boolean
+}

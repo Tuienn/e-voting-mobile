@@ -8,7 +8,7 @@ import {
     unblind,
     verify
 } from '@/lib/ec-schnorr'
-import { saveVoteParamsSecret } from '@/lib/secure-store'
+import { saveVoteParamsSecret, saveVoteStatus } from '@/lib/secure-store'
 import VoteService from '@/services/bff/vote.service'
 import { Vote, VoteStep } from '@/types/vote'
 import { useCallback, useMemo, useState } from 'react'
@@ -57,8 +57,11 @@ const useVoteFlow = (electionId: string) => {
 
                 await saveVoteParamsSecret(submitVoteRes.data.id, {
                     h: scalarToHex(unblinded.h),
-                    sPrime: scalarToHex(unblinded.sPrime),
-                    candidateId
+                    sPrime: scalarToHex(unblinded.sPrime)
+                })
+                await saveVoteStatus(submitVoteRes.data.id, {
+                    candidateId: candidateId,
+                    revealed: false
                 })
 
                 setReceipt(submitVoteRes.data)

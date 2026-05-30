@@ -1,5 +1,6 @@
 import * as SecureStore from 'expo-secure-store'
 import { Platform } from 'react-native'
+import { VoteParamsSecret, VoteStatus } from '../types/reveal'
 
 //NOTE - Xác định đang chạy web hay native
 const isWeb = Platform.OS === 'web'
@@ -73,12 +74,6 @@ export const clearAuthToken = async () => {
     await removeDataStorage('refreshToken')
 }
 
-type VoteParamsSecret = {
-    h: string
-    sPrime: string
-    candidateId: string
-}
-
 //NOTE - Vote params secret management
 export const saveVoteParamsSecret = async (voteId: string, params: VoteParamsSecret) => {
     const data = JSON.stringify(params)
@@ -99,12 +94,18 @@ export const clearVoteParamsSecret = async (voteId: string) => {
     await removeDataStorage(`voteParamsSecret-${voteId}`)
 }
 
-//NOTE - Đánh dấu phiếu đã được tiết lộ (reveal) trên thiết bị này (API không có field revealed cho từng cử tri)
-export const saveVoteRevealed = async (voteId: string) => {
-    await saveDataStorage(`voteRevealed-${voteId}`, '1')
+//NOTE - Vote status management (candidateId and revealed flag)
+export const saveVoteStatus = async (voteId: string, status: VoteStatus) => {
+    const data = JSON.stringify(status)
+    await saveDataStorage(`voteStatus-${voteId}`, data)
 }
 
-export const getVoteRevealed = async (voteId: string): Promise<boolean> => {
-    const data = await getDataStorage(`voteRevealed-${voteId}`)
-    return data === '1'
+export const getVoteStatus = async (voteId: string): Promise<VoteStatus | null> => {
+    const data = await getDataStorage(`voteStatus-${voteId}`)
+    if (!data) return null
+    try {
+        return JSON.parse(data)
+    } catch {
+        return null
+    }
 }
