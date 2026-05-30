@@ -38,13 +38,13 @@ const ElectionTabBar: React.FC<Props> = ({
     }
     const resultsItem: FixedCustomTabBarItem = {
         key: 'results',
-        label: 'Xem kết quả',
+        label: 'Kết quả',
         icon: <ChartColumnBigIcon color={color} />,
         onPress: onResults
     }
     const revealItem: FixedCustomTabBarItem = {
         key: 'reveal',
-        label: 'Tiết lộ phiếu',
+        label: 'Tiết lộ',
         icon: <EyeIcon color={color} />,
         onPress: onReveal
     }
@@ -69,9 +69,7 @@ const ElectionTabBar: React.FC<Props> = ({
                   ]
             break
         case 'CLOSED':
-            items = vote
-                ? [verifyItem, ...(!revealed && hasSecret ? [revealItem] : []), resultsItem]
-                : [resultsItem]
+            items = vote ? [verifyItem, ...(!revealed && hasSecret ? [revealItem] : []), resultsItem] : [resultsItem]
             break
         case 'COMPLETED':
             items = vote ? [verifyItem, resultsItem] : [resultsItem]

@@ -1,11 +1,11 @@
 import ScreenHeader from '@/components/common/screen-header'
-import CandidateResult from '@/components/screens/election/candidate-result'
+import CandidateResult from '@/components/screens/receipt/candidate-result'
 import ElectionSkeleton from '@/components/screens/election/election-skeleton'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Text } from '@/components/ui/text'
 import RevealService from '@/services/reveal/reveal.service'
 import { useLocalSearchParams } from 'expo-router'
-import { AlertCircleIcon, AlertTriangleIcon } from 'lucide-react-native'
+import { AlertCircleIcon, AlertTriangleIcon, TerminalIcon } from 'lucide-react-native'
 import { RefreshControl, View } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -39,13 +39,17 @@ const ElectionResultScreen: React.FC = () => {
                         </Alert>
                     ) : tally ? (
                         <>
-                            <View className='gap-1'>
-                                <Text variant='large'>{tally.electionName}</Text>
-                                <Text variant='muted'>
-                                    Tổng phiếu đã tiết lộ: {tally.dbRevealTotal} (DB) · {tally.chainRevealTotal}{' '}
-                                    (blockchain)
-                                </Text>
-                            </View>
+                            <Text variant='large'>{tally.electionName}</Text>
+
+                            <Alert variant='info' icon={TerminalIcon}>
+                                <AlertTitle>Tổng số phiếu đã tiết lộ</AlertTitle>
+                                <AlertDescription className='pb-0'>
+                                    Cơ sở dữ liệu: {tally.dbRevealTotal}
+                                </AlertDescription>
+                                <AlertDescription className='pb-0'>
+                                    Blockchain: {tally.chainRevealTotal}
+                                </AlertDescription>
+                            </Alert>
 
                             {tally.chainError && (
                                 <Alert variant='warning' icon={AlertTriangleIcon}>

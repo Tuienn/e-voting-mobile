@@ -24,9 +24,7 @@ const VerifyResultScreen: React.FC = () => {
             >
                 <View className='gap-3'>
                     <ScreenHeader title='Kết quả xác minh' />
-                    <ReceiptResult
-                        receipt={buildReceipt({ voteId, electionId, blindedCommitment, blockchainRef })}
-                    />
+                    <ReceiptResult receipt={buildReceipt({ voteId, electionId, blindedCommitment, blockchainRef })} />
                 </View>
             </Animated.ScrollView>
         </SafeAreaView>

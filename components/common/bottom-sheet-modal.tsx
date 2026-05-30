@@ -10,6 +10,7 @@ import {
     StyleSheet,
     View
 } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window')
 const DISMISS_THRESHOLD = 80
@@ -23,7 +24,7 @@ interface Props {
 
 const BottomSheetModal: React.FC<Props> = ({ open: visible, onClose, children }) => {
     const [contentHeight, setContentHeight] = useState(0)
-
+    const insets = useSafeAreaInsets()
     const translateY = useRef(new Animated.Value(SCREEN_HEIGHT)).current
     const backdropOpacity = useRef(new Animated.Value(0)).current
     // opacity của sheet: ẩn trong lúc đo để không thấy nó "nhảy"
@@ -149,7 +150,9 @@ const BottomSheetModal: React.FC<Props> = ({ open: visible, onClose, children })
                     <View style={styles.handle} />
                 </View>
 
-                <View onLayout={handleLayout}>{children}</View>
+                <View onLayout={handleLayout} style={{ paddingBottom: insets.bottom }}>
+                    {children}
+                </View>
             </Animated.View>
         </Modal>
     )

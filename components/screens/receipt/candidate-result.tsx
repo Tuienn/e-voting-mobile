@@ -44,7 +44,7 @@ const CandidateResult: React.FC<Props> = ({ name, dbCount, dbTotal, chainCount, 
                         {dbCount} phiếu · {percent(dbCount, dbTotal)}%
                     </Text>
                 </View>
-                <Progress value={percent(dbCount, dbTotal)} indicatorClassName='bg-foreground' />
+                <Progress value={percent(dbCount, dbTotal)} />
             </View>
 
             <View className='gap-1'>
@@ -56,7 +56,7 @@ const CandidateResult: React.FC<Props> = ({ name, dbCount, dbTotal, chainCount, 
                         {chainCount} phiếu · {percent(chainCount, chainTotal)}%
                     </Text>
                 </View>
-                <Progress value={percent(chainCount, chainTotal)} indicatorClassName='bg-blue-500' />
+                <Progress value={percent(chainCount, chainTotal)} />
             </View>
         </View>
     )

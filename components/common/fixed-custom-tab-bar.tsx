@@ -19,7 +19,7 @@ const FixedCustomTabBar: React.FC<Props> = ({ items }) => {
     const insets = useSafeAreaInsets()
 
     return (
-        <View pointerEvents='box-none' style={[styles.wrapper, { paddingBottom: Math.max(insets.bottom, 16) + 8 }]}>
+        <View pointerEvents='box-none' style={[styles.wrapper, { bottom: insets.bottom + 8 }]}>
             <View
                 pointerEvents='box-none'
                 className='bg-foreground/70 flex-row items-center gap-2 rounded-full p-2 shadow-lg backdrop-blur-sm'
@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        bottom: -5,
         zIndex: 10,
         elevation: 100,
         alignItems: 'center'

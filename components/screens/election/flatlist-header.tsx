@@ -26,9 +26,7 @@ const FlatListHeader: React.FC<Props> = ({
         <View className='mb-3 gap-3'>
             <View className='flex flex-row items-center'>
                 <View className='flex-1'>
-                    <Text variant={'lead'} className='font-semibold uppercase'>
-                        Bầu cử
-                    </Text>
+                    <Text className='text-2xl font-semibold'>Bầu cử</Text>
                 </View>
 
                 <View className='flex-row items-center gap-2'>
@@ -41,10 +39,6 @@ const FlatListHeader: React.FC<Props> = ({
                     </Avatar>
                 </View>
             </View>
-
-            <Text variant={'h2'} className='border-b-0 pb-0 text-start'>
-                {'Các cuộc bầu cử\ntuần này.'}
-            </Text>
 
             {queryElectionCount.error ? (
                 <Alert variant='destructive' icon={AlertCircleIcon}>

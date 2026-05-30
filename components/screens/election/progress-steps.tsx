@@ -1,6 +1,6 @@
 import { Icon } from '@/components/ui/icon'
-import { CheckIcon, DotIcon, XIcon } from 'lucide-react-native'
-import { View } from 'react-native'
+import { CheckIcon, XIcon } from 'lucide-react-native'
+import { ActivityIndicator, View } from 'react-native'
 import { Text } from '@/components/ui/text'
 
 type ProgressStepsProps = {
@@ -32,7 +32,7 @@ function StepIcon({ stepNumber, status }: { stepNumber: number; status: StepStat
         case 'active':
             return (
                 <View className={`${baseCircle} border-2 border-blue-500 dark:bg-blue-600`}>
-                    <Icon as={DotIcon} className='animate-spin text-blue-500' size={50} />
+                    <ActivityIndicator />
                 </View>
             )
 
