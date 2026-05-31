@@ -1,7 +1,7 @@
 export interface RevealVoteResult {
     id: string
     electionId: string
-    candidateId: string
+    candidateIds: string[]
     revealKey: string
     blockchainRef: string
     createdAt?: string
@@ -20,8 +20,12 @@ export interface TallyResult {
     electionName: string
     status: string
     tallyResult: TallyCandidateResult[]
-    dbRevealTotal: number
-    chainRevealTotal: number
+    // Số phiếu đã reveal (mỗi lá phiếu đếm đúng 1 lần)
+    dbRevealedBallots: number
+    chainRevealedBallots: number
+    // Tổng lượt chọn (mỗi lượt chọn ứng viên đếm 1 lần; >= số phiếu khi bầu nhiều ứng viên)
+    dbTotalSelections: number
+    chainTotalSelections: number
     chainError: string | null
 }
 
@@ -31,6 +35,6 @@ export interface VoteParamsSecret {
 }
 
 export interface VoteStatus {
-    candidateId: string
+    candidateIds: string[]
     revealed: boolean
 }

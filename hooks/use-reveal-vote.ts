@@ -14,7 +14,7 @@ type RevealableVote = {
 type RevealVoteParams = {
     h?: string
     sPrime?: string
-    candidateId?: string
+    candidateIds?: string[]
 }
 
 const useRevealVote = (params: RevealVoteParams) => {
@@ -34,18 +34,18 @@ const useRevealVote = (params: RevealVoteParams) => {
                     return
                 }
 
-                if (!params.candidateId) {
+                if (!params.candidateIds || params.candidateIds.length === 0) {
                     Toast.show({
                         type: 'error',
-                        text1: 'Không xác định được ứng cử viên đã chọn',
-                        text2: 'Thông tin ứng cử viên đã chọn không hợp lệ, không thể tiết lộ.'
+                        text1: 'Không xác định được các ứng cử viên đã chọn',
+                        text2: 'Thông tin các ứng cử viên đã chọn không hợp lệ, không thể tiết lộ.'
                     })
                     return
                 }
 
                 //SECTION - Tiết lộ phiếu
                 await RevealService.revealVote(vote.electionId, {
-                    candidateId: params.candidateId,
+                    candidateIds: params.candidateIds,
                     h: params.h,
                     sPrime: params.sPrime
                 })
@@ -54,7 +54,7 @@ const useRevealVote = (params: RevealVoteParams) => {
                 await clearVoteParamsSecret(vote.id)
 
                 await saveVoteStatus(vote.id, {
-                    candidateId: params.candidateId,
+                    candidateIds: params.candidateIds,
                     revealed: true
                 })
 
@@ -77,7 +77,8 @@ const useRevealVote = (params: RevealVoteParams) => {
                 setIsRevealing(false)
             }
         },
-        [params.h, params.sPrime, params.candidateId]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [params.h, params.sPrime, JSON.stringify(params.candidateIds)]
     )
 
     return { isRevealing, reveal }

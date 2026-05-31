@@ -4,12 +4,17 @@ import { randomAvatar } from '@/lib/utils'
 import { useMemo } from 'react'
 import { View } from 'react-native'
 
-interface Props {
+interface Candidate {
+    id: string
     name: string
     email: string
 }
 
-const CandidateSelected: React.FC<Props> = ({ name, email }) => {
+interface Props {
+    candidates: Candidate[]
+}
+
+const CandidateSelectedItem: React.FC<Candidate> = ({ name, email }) => {
     const randomAvatarUrl = useMemo(() => {
         return randomAvatar()
     }, [])
@@ -36,6 +41,23 @@ const CandidateSelected: React.FC<Props> = ({ name, email }) => {
                 <Text className='font-medium'>{name}</Text>
                 <Text className='text-muted-foreground text-sm'>{email}</Text>
             </View>
+        </View>
+    )
+}
+
+const CandidateSelected: React.FC<Props> = ({ candidates }) => {
+    if (candidates.length === 0) return null
+
+    return (
+        <View className='gap-2'>
+            {candidates.map((candidate) => (
+                <CandidateSelectedItem
+                    key={candidate.id}
+                    id={candidate.id}
+                    name={candidate.name}
+                    email={candidate.email}
+                />
+            ))}
         </View>
     )
 }

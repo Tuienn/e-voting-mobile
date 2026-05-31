@@ -41,7 +41,7 @@ const CandidateResult: React.FC<Props> = ({ name, dbCount, dbTotal, chainCount, 
                         Cơ sở dữ liệu
                     </Text>
                     <Text className='text-xs font-semibold'>
-                        {dbCount} phiếu · {percent(dbCount, dbTotal)}%
+                        {dbCount} lượt chọn · {percent(dbCount, dbTotal)}%
                     </Text>
                 </View>
                 <Progress value={percent(dbCount, dbTotal)} />
@@ -53,7 +53,7 @@ const CandidateResult: React.FC<Props> = ({ name, dbCount, dbTotal, chainCount, 
                         Blockchain
                     </Text>
                     <Text className='text-xs font-semibold'>
-                        {chainCount} phiếu · {percent(chainCount, chainTotal)}%
+                        {chainCount} lượt chọn · {percent(chainCount, chainTotal)}%
                     </Text>
                 </View>
                 <Progress value={percent(chainCount, chainTotal)} />

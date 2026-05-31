@@ -25,7 +25,7 @@ import { VoteParamsSecret, VoteStatus } from '../../types/reveal'
 
 const ElectionDetailScreen: React.FC = () => {
     const { id } = useLocalSearchParams<{ id: string }>()
-    const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null)
+    const [selectedCandidateIds, setSelectedCandidateIds] = useState<string[]>([])
     const [voteSheetVisible, setVoteSheetVisible] = useState(false)
     const [revealSheetVisible, setRevealSheetVisible] = useState(false)
     const [voteParamsSecret, setVoteParamsSecret] = useState<VoteParamsSecret | null>(null)
@@ -50,24 +50,30 @@ const ElectionDetailScreen: React.FC = () => {
             if (!active) return
             setVoteParamsSecret(secret)
             setVoteStatus(voteStatus)
-            if (voteStatus?.candidateId) setSelectedCandidateId(voteStatus.candidateId)
+            if (voteStatus?.candidateIds) setSelectedCandidateIds(voteStatus.candidateIds)
         })()
         return () => {
             active = false
         }
     }, [vote?.id])
 
-    const candidateSelected = useMemo(() => {
-        if (!selectedCandidateId) return null
-        const candidate = election?.candidates.find((c) => c.id === selectedCandidateId)
-        if (!candidate) return null
-        return { name: candidate.name, email: candidate.email, id: candidate.id }
-    }, [selectedCandidateId, election])
+    const maxSelectable = election?.maxSelectableCandidates ?? 1
+
+    const candidatesSelected = useMemo(() => {
+        if (!election) return []
+        return election.candidates.filter((c) => selectedCandidateIds.includes(c.id))
+    }, [selectedCandidateIds, election])
+
+    const toggleCandidate = (candidateId: string) => {
+        setSelectedCandidateIds((prev) =>
+            prev.includes(candidateId) ? prev.filter((cId) => cId !== candidateId) : [...prev, candidateId]
+        )
+    }
 
     const { isRevealing, reveal } = useRevealVote({
         h: voteParamsSecret?.h,
         sPrime: voteParamsSecret?.sPrime,
-        candidateId: voteStatus?.candidateId
+        candidateIds: voteStatus?.candidateIds
     })
 
     const handleVerify = () => {
@@ -132,7 +138,7 @@ const ElectionDetailScreen: React.FC = () => {
                                 </Text>
 
                                 <Text variant={'muted'}>
-                                    Đã chọn {selectedCandidateId ? 1 : 0} trên {election.candidateIds.length}
+                                    Đã chọn {selectedCandidateIds.length} / tối đa {maxSelectable}
                                 </Text>
                             </View>
 
@@ -142,7 +148,7 @@ const ElectionDetailScreen: React.FC = () => {
                                 </Alert>
                             ) : election.status === 'ACTIVE' ? (
                                 <Alert icon={TerminalIcon} variant='info'>
-                                    <AlertTitle>Chọn tối đa 1 ứng cử viên</AlertTitle>
+                                    <AlertTitle>Chọn tối đa {maxSelectable} ứng cử viên</AlertTitle>
                                 </Alert>
                             ) : (
                                 <Alert icon={AlertTriangleIcon} variant='warning'>
@@ -150,17 +156,25 @@ const ElectionDetailScreen: React.FC = () => {
                                 </Alert>
                             )}
 
-                            {election.candidates.map((candidate) => (
-                                <CandidateCheckbox
-                                    key={candidate.id}
-                                    candidateId={candidate.id}
-                                    name={candidate.name}
-                                    email={candidate.email}
-                                    isSelected={selectedCandidateId === candidate.id}
-                                    onSelect={setSelectedCandidateId}
-                                    disabled={election.status !== 'ACTIVE' || !!vote}
-                                />
-                            ))}
+                            {election.candidates.map((candidate) => {
+                                const isSelected = selectedCandidateIds.includes(candidate.id)
+                                const reachedMax = selectedCandidateIds.length >= maxSelectable
+                                return (
+                                    <CandidateCheckbox
+                                        key={candidate.id}
+                                        candidateId={candidate.id}
+                                        name={candidate.name}
+                                        email={candidate.email}
+                                        isSelected={isSelected}
+                                        onSelect={toggleCandidate}
+                                        disabled={
+                                            election.status !== 'ACTIVE' ||
+                                            !!vote ||
+                                            (!isSelected && reachedMax)
+                                        }
+                                    />
+                                )
+                            })}
                         </>
                     ) : (
                         <ElectionSkeleton />
@@ -173,7 +187,7 @@ const ElectionDetailScreen: React.FC = () => {
                     election={election}
                     revealed={!!voteStatus?.revealed}
                     hasSecret={!!voteParamsSecret}
-                    voteDisabled={!selectedCandidateId}
+                    voteDisabled={selectedCandidateIds.length === 0}
                     onVote={() => setVoteSheetVisible(true)}
                     onVerify={handleVerify}
                     onReveal={() => setRevealSheetVisible(true)}
@@ -189,9 +203,7 @@ const ElectionDetailScreen: React.FC = () => {
                     <Text className='text-center' variant={'muted'}>
                         Sau khi gửi phiếu bạn sẽ nhận lại biên lai để xác minh phiếu bầu
                     </Text>
-                    {candidateSelected && (
-                        <CandidateSelected name={candidateSelected.name} email={candidateSelected.email} />
-                    )}
+                    {candidatesSelected.length > 0 && <CandidateSelected candidates={candidatesSelected} />}
                     <Alert icon={ShieldCheckIcon} variant='success'>
                         <AlertTitle>Lá phiếu sẽ được mã hoá và ghi lên blockchain.</AlertTitle>
                     </Alert>
@@ -202,7 +214,7 @@ const ElectionDetailScreen: React.FC = () => {
                                 pathname: '/election/vote-flow',
                                 params: {
                                     electionId: id,
-                                    candidateId: selectedCandidateId
+                                    candidateIds: JSON.stringify(selectedCandidateIds)
                                 }
                             })
                         }

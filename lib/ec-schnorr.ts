@@ -5,6 +5,8 @@ import { bytesToHex, randomBytes } from '@noble/hashes/utils.js'
 
 const SCALAR_BYTES = 32
 
+const VOTE_DOMAIN = 'ev-vote-v2'
+
 type EcPoint = ReturnType<typeof secp256k1.Point.fromHex>
 
 interface BlindResult {
@@ -97,10 +99,19 @@ export function hashToScalar(buffers: Uint8Array[], n: bigint): bigint {
     return modN(bytesToBigInt(sha256(input)), n)
 }
 
-export function buildVoteMessage(electionId: string, candidateId: string): Uint8Array {
+export function canonicalizeCandidateIds(ids: string[]): string[] {
+    return [...new Set(ids)].sort()
+}
+
+export function canonicalCandidateIdsPayload(ids: string[]): string {
+    return JSON.stringify(canonicalizeCandidateIds(ids))
+}
+
+export function buildVoteMessage(electionId: string, candidateIds: string[]): Uint8Array {
     const enc = new TextEncoder()
     const sep = new Uint8Array([0])
-    const parts = [enc.encode('ev-vote-v1'), sep, enc.encode(electionId), sep, enc.encode(candidateId)]
+    const payload = canonicalCandidateIdsPayload(candidateIds)
+    const parts = [enc.encode(VOTE_DOMAIN), sep, enc.encode(electionId), sep, enc.encode(payload)]
     const total = parts.reduce((acc, item) => acc + item.length, 0)
     const buf = new Uint8Array(total)
     let offset = 0

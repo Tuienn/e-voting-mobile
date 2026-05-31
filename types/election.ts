@@ -12,6 +12,7 @@ export interface Election {
     name: string
     status: ElectionStatus
     candidateIds: string[]
+    maxSelectableCandidates: number
     merkleRoot?: string
     blockchainRef?: string
     collectivePublicKey?: string

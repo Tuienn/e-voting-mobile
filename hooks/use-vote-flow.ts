@@ -26,7 +26,7 @@ const useVoteFlow = (electionId: string) => {
     }, [])
 
     const vote = useCallback(
-        async (candidateId: string) => {
+        async (candidateIds: string[]) => {
             try {
                 reset()
                 setStep('PREPARING')
@@ -34,7 +34,7 @@ const useVoteFlow = (electionId: string) => {
 
                 const collectiveCommitment = hexToPoint(session.data.collectiveCommitment)
                 const collectivePublicKey = hexToPoint(session.data.collectivePublicKey)
-                const messageBytes = buildVoteMessage(electionId, candidateId)
+                const messageBytes = buildVoteMessage(electionId, candidateIds)
                 const blinded = blind(messageBytes, collectiveCommitment, collectivePublicKey)
 
                 setStep('SIGNING')
@@ -60,7 +60,7 @@ const useVoteFlow = (electionId: string) => {
                     sPrime: scalarToHex(unblinded.sPrime)
                 })
                 await saveVoteStatus(submitVoteRes.data.id, {
-                    candidateId: candidateId,
+                    candidateIds: candidateIds,
                     revealed: false
                 })
 

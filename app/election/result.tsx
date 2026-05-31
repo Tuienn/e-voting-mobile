@@ -6,7 +6,7 @@ import { Text } from '@/components/ui/text'
 import useElectionSocket from '@/hooks/use-election-socket'
 import RevealService from '@/services/reveal/reveal.service'
 import { useLocalSearchParams } from 'expo-router'
-import { AlertCircleIcon, AlertTriangleIcon, TerminalIcon } from 'lucide-react-native'
+import { AlertCircleIcon, AlertTriangleIcon } from 'lucide-react-native'
 import { RefreshControl, View } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -44,16 +44,6 @@ const ElectionResultScreen: React.FC = () => {
                         <>
                             <Text variant='large'>{tally.electionName}</Text>
 
-                            <Alert variant='info' icon={TerminalIcon}>
-                                <AlertTitle>Tổng số phiếu đã tiết lộ</AlertTitle>
-                                <AlertDescription className='pb-0'>
-                                    Cơ sở dữ liệu: {tally.dbRevealTotal}
-                                </AlertDescription>
-                                <AlertDescription className='pb-0'>
-                                    Blockchain: {tally.chainRevealTotal}
-                                </AlertDescription>
-                            </Alert>
-
                             {tally.chainError && (
                                 <Alert variant='warning' icon={AlertTriangleIcon}>
                                     <AlertTitle>Không lấy được dữ liệu blockchain</AlertTitle>
@@ -66,9 +56,9 @@ const ElectionResultScreen: React.FC = () => {
                                     key={candidate.candidateId}
                                     name={candidate.candidateName ?? 'Ứng viên'}
                                     dbCount={candidate.dbRevealCount}
-                                    dbTotal={tally.dbRevealTotal}
+                                    dbTotal={tally.dbTotalSelections}
                                     chainCount={candidate.chainRevealCount}
-                                    chainTotal={tally.chainRevealTotal}
+                                    chainTotal={tally.chainTotalSelections}
                                 />
                             ))}
                         </>

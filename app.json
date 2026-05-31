@@ -20,7 +20,9 @@
             "adaptiveIcon": {
                 "foregroundImage": "./assets/images/adaptive-icon.png",
                 "backgroundColor": "#ffffff"
-            }
+            },
+            "permissions": ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"],
+            "package": "com.tuienn.evote"
         },
         "web": {
             "bundler": "metro",
@@ -45,6 +47,13 @@
         "experiments": {
             "typedRoutes": true,
             "reactCompiler": true
-        }
+        },
+        "extra": {
+            "router": {},
+            "eas": {
+                "projectId": "d3c7ddef-05d0-4a03-9ab7-ee61c8291c37"
+            }
+        },
+        "owner": "tuienn"
     }
 }

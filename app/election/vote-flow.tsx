@@ -21,19 +21,33 @@ const VOTE_STEPS_INDEX: Record<VoteStep, number> = {
 }
 
 const VoteFlowScreen: React.FC = () => {
-    const { electionId, candidateId } = useLocalSearchParams<{ electionId: string; candidateId: string }>()
+    const { electionId, candidateIds } = useLocalSearchParams<{ electionId: string; candidateIds: string }>()
 
     const voteFlow = useVoteFlow(electionId)
 
+    const parseCandidateIds = (raw: string | undefined): string[] => {
+        if (!raw) return []
+        try {
+            const parsed = JSON.parse(raw)
+            if (Array.isArray(parsed) && parsed.every((item) => typeof item === 'string')) {
+                return parsed
+            }
+            return []
+        } catch {
+            return []
+        }
+    }
+
     const handleVote = async () => {
-        await voteFlow.vote(candidateId)
+        await voteFlow.vote(parseCandidateIds(candidateIds))
     }
 
     useEffect(() => {
         if (voteFlow.step === 'IDLE') {
             handleVote()
         }
-    }, [candidateId])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [candidateIds])
 
     return (
         <SafeAreaView style={{ flex: 1 }}>

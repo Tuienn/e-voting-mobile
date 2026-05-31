@@ -5,7 +5,7 @@ import { revealApiService } from '.'
 export default class RevealService {
     private static readonly BASE_URL = '/reveal-vote'
 
-    static async revealVote(electionId: string, data: { candidateId: string; h: string; sPrime: string }) {
+    static async revealVote(electionId: string, data: { candidateIds: string[]; h: string; sPrime: string }) {
         return await revealApiService<ApiResponse<RevealVoteResult>>(`${this.BASE_URL}/${electionId}/reveal`, {
             method: 'POST',
             body: JSON.stringify(data)
