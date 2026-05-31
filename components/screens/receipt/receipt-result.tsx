@@ -116,7 +116,7 @@ const ReceiptResult: React.FC<Props> = ({ receipt }) => {
                         title='Cơ sở dữ liệu'
                         description={result.db.valid ? 'Khớp' : 'Không khớp'}
                     >
-                        <DetailRow label='Tồn tại' value={result.db.exist} />
+                        <DetailRow label='Tồn tại trên cơ sở dữ liệu' value={result.db.exist} />
                         <DetailRow label='Phiếu bầu khớp' value={result.db.voteIdMatch} />
                         <DetailRow label='Cam kết khớp' value={result.db.commitmentMatch} />
                         <DetailRow label='Tham chiếu blockchain khớp' value={result.db.blockchainRefMatch} />

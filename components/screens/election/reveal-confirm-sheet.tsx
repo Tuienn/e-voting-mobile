@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { Text } from '@/components/ui/text'
 import { AlertTriangleIcon, EyeIcon } from 'lucide-react-native'
-import { ActivityIndicator, View } from 'react-native'
+import { View } from 'react-native'
 
 interface Props {
     onConfirm: () => void
@@ -26,7 +26,7 @@ const RevealConfirmSheet: React.FC<Props> = ({ onConfirm, loading }) => {
             </Alert>
 
             <Button onPress={onConfirm} disabled={loading}>
-                {loading ? <ActivityIndicator /> : <Icon as={EyeIcon} />}
+                <Icon as={EyeIcon} />
                 <Text>Tiết lộ lá phiếu</Text>
             </Button>
         </View>

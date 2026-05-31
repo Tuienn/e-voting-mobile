@@ -10,6 +10,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { Text } from '@/components/ui/text'
+import useElectionSocket from '@/hooks/use-election-socket'
 import useRevealVote from '@/hooks/use-reveal-vote'
 import { getVoteParamsSecret, getVoteStatus } from '@/lib/secure-store'
 import ElectionService from '@/services/bff/election.service'
@@ -30,6 +31,8 @@ const ElectionDetailScreen: React.FC = () => {
     const [voteParamsSecret, setVoteParamsSecret] = useState<VoteParamsSecret | null>(null)
     const [voteStatus, setVoteStatus] = useState<VoteStatus | null>(null)
     const queryElectionById = useSWR(`election/${id}`, () => ElectionService.getElectionById(id))
+
+    useElectionSocket(id, ['committed'])
 
     const election = queryElectionById.data?.data
     const vote = election?.vote

@@ -3,6 +3,7 @@ import CandidateResult from '@/components/screens/receipt/candidate-result'
 import ElectionSkeleton from '@/components/screens/election/election-skeleton'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Text } from '@/components/ui/text'
+import useElectionSocket from '@/hooks/use-election-socket'
 import RevealService from '@/services/reveal/reveal.service'
 import { useLocalSearchParams } from 'expo-router'
 import { AlertCircleIcon, AlertTriangleIcon, TerminalIcon } from 'lucide-react-native'
@@ -15,6 +16,8 @@ const ElectionResultScreen: React.FC = () => {
     const { electionId } = useLocalSearchParams<{ electionId: string }>()
 
     const queryTally = useSWR(electionId ? `tally/${electionId}` : null, () => RevealService.getTally(electionId))
+
+    useElectionSocket(electionId, ['revealed'])
 
     const tally = queryTally.data?.data
 

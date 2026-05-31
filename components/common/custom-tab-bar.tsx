@@ -107,7 +107,7 @@ const FloatingNavBar: React.FC<FloatingNavBarProps> = ({ navVisible, items }) =>
     return (
         <Animated.View
             pointerEvents='box-none'
-            style={[styles.wrapper, { paddingBottom: Math.max(insets.bottom, 16) }, animStyle]}
+            style={[styles.wrapper, { paddingBottom: Math.max(insets.bottom, 16) + 8 }, animStyle]}
         >
             <View
                 pointerEvents='box-none'
