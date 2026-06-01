@@ -21,7 +21,7 @@ import { RefreshControl, View } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import useSWR from 'swr'
-import { VoteParamsSecret, VoteStatus } from '../../types/reveal'
+import { VoteParamsSecret, VoteStatus } from '@/types/backup'
 
 const ElectionDetailScreen: React.FC = () => {
     const { id } = useLocalSearchParams<{ id: string }>()
@@ -167,11 +167,7 @@ const ElectionDetailScreen: React.FC = () => {
                                         email={candidate.email}
                                         isSelected={isSelected}
                                         onSelect={toggleCandidate}
-                                        disabled={
-                                            election.status !== 'ACTIVE' ||
-                                            !!vote ||
-                                            (!isSelected && reachedMax)
-                                        }
+                                        disabled={election.status !== 'ACTIVE' || !!vote || (!isSelected && reachedMax)}
                                     />
                                 )
                             })}
@@ -196,7 +192,7 @@ const ElectionDetailScreen: React.FC = () => {
             )}
 
             <BottomSheetModal open={voteSheetVisible} onClose={() => setVoteSheetVisible(false)}>
-                <View className='gap-3 p-4'>
+                <View className='gap-3 px-4'>
                     <Text className='text-center' variant={'large'}>
                         Xác nhận bỏ phiếu
                     </Text>

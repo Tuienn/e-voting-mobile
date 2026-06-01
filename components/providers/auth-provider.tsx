@@ -1,5 +1,5 @@
 import { clearAuthToken, getAccessToken, getRefreshToken, saveAccessToken, saveRefreshToken } from '@/lib/secure-store'
-import React, { createContext, useState, useEffect, PropsWithChildren } from 'react'
+import React, { createContext, useState, useEffect, PropsWithChildren, useCallback } from 'react'
 import { UserSession } from '@/types/auth'
 import AuthService from '@/services/bff/auth.service'
 import useSWRMutation from 'swr/mutation'
@@ -19,9 +19,10 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
     useEffect(() => {
         checkAuthOnStart()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const checkAuthOnStart = async () => {
+    const checkAuthOnStart = useCallback(async () => {
         const accessToken = await getAccessToken()
         if (accessToken) {
             // If we have an access token, try to fetch the current user
@@ -38,7 +39,8 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
             mutateRefreshToken.trigger(refreshToken)
         }
-    }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const queryCurrentUser = useSWRMutation('user', () => AuthService.getCurrentUser(), {
         onSuccess: (data) => {

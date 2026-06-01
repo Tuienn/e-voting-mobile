@@ -1,6 +1,6 @@
 import * as SecureStore from 'expo-secure-store'
 import { Platform } from 'react-native'
-import { VoteParamsSecret, VoteStatus } from '../types/reveal'
+import { VoteParamsSecret, VoteSecretBackupMap, VoteStatus } from '../types/backup'
 
 //NOTE - Xác định đang chạy web hay native
 const isWeb = Platform.OS === 'web'
@@ -74,10 +74,38 @@ export const clearAuthToken = async () => {
     await removeDataStorage('refreshToken')
 }
 
+export const clearAllSecureData = async () => {
+    const ids = await getBackupVoteIds()
+    for (const voteId of ids) {
+        await removeDataStorage(`voteParamsSecret-${voteId}`)
+        await removeDataStorage(`voteStatus-${voteId}`)
+    }
+    await removeDataStorage('voteSecretIndex')
+}
+
+export const getBackupVoteIds = async (): Promise<string[]> => {
+    const data = await getDataStorage('voteSecretIndex')
+    if (!data) return []
+    try {
+        const arr = JSON.parse(data)
+        return Array.isArray(arr) ? arr : []
+    } catch {
+        return []
+    }
+}
+
+const addVoteIdToIndex = async (voteId: string) => {
+    const ids = await getBackupVoteIds()
+    if (!ids.includes(voteId)) {
+        await saveDataStorage('voteSecretIndex', JSON.stringify([...ids, voteId]))
+    }
+}
+
 //NOTE - Vote params secret management
 export const saveVoteParamsSecret = async (voteId: string, params: VoteParamsSecret) => {
     const data = JSON.stringify(params)
     await saveDataStorage(`voteParamsSecret-${voteId}`, data)
+    await addVoteIdToIndex(voteId)
 }
 
 export const getVoteParamsSecret = async (voteId: string): Promise<VoteParamsSecret | null> => {
@@ -98,6 +126,7 @@ export const clearVoteParamsSecret = async (voteId: string) => {
 export const saveVoteStatus = async (voteId: string, status: VoteStatus) => {
     const data = JSON.stringify(status)
     await saveDataStorage(`voteStatus-${voteId}`, data)
+    await addVoteIdToIndex(voteId)
 }
 
 export const getVoteStatus = async (voteId: string): Promise<VoteStatus | null> => {
@@ -107,5 +136,27 @@ export const getVoteStatus = async (voteId: string): Promise<VoteStatus | null> 
         return JSON.parse(data)
     } catch {
         return null
+    }
+}
+
+export const collectVoteSecretsForBackup = async (): Promise<VoteSecretBackupMap> => {
+    const ids = await getBackupVoteIds()
+    const result: VoteSecretBackupMap = {}
+
+    for (const voteId of ids) {
+        const [params, status] = await Promise.all([getVoteParamsSecret(voteId), getVoteStatus(voteId)])
+        if (params || status) {
+            result[voteId] = { params, status }
+        }
+    }
+
+    return result
+}
+
+export const restoreVoteSecretsFromBackup = async (map: VoteSecretBackupMap) => {
+    for (const [voteId, entry] of Object.entries(map)) {
+        // saveVoteParamsSecret/saveVoteStatus tự cập nhật index
+        if (entry?.params) await saveVoteParamsSecret(voteId, entry.params)
+        if (entry?.status) await saveVoteStatus(voteId, entry.status)
     }
 }

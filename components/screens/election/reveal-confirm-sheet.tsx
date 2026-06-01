@@ -22,7 +22,7 @@ const RevealConfirmSheet: React.FC<Props> = ({ onConfirm, loading }) => {
 
             <Alert icon={AlertTriangleIcon} variant='warning'>
                 <AlertTitle>Không thể hoàn tác</AlertTitle>
-                <AlertDescription>Reveal sẽ tính phiếu của bạn vào kết quả công khai.</AlertDescription>
+                <AlertDescription>Tiến hành tiết lộ sẽ tính phiếu của bạn vào kết quả công khai.</AlertDescription>
             </Alert>
 
             <Button onPress={onConfirm} disabled={loading}>

@@ -1,23 +1,24 @@
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView } from 'react-native'
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, View, Image } from 'react-native'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Icon } from '@/components/ui/icon'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Text } from '@/components/ui/text'
-import { LogInIcon, ScanQrCodeIcon, ShieldIcon } from 'lucide-react-native'
-import { View, Image } from 'react-native'
+import { ChevronLeftIcon, LogInIcon, ScanQrCodeIcon, ShieldIcon } from 'lucide-react-native'
 import { useState } from 'react'
 import useSWRMutation from 'swr/mutation'
 import AuthService from '@/services/bff/auth.service'
 import { useAuth } from '@/hooks/use-auth'
 import Toast from 'react-native-toast-message'
 import { router } from 'expo-router'
+import VerifyCameraView from '../components/common/verify-camera-view'
 
 const LoginScreen: React.FC = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const { login } = useAuth()
+    const [verifyViewVisible, setVerifyViewVisible] = useState(false)
 
     const handleValidate = () => {
         if (!email.trim() || !password.trim()) {
@@ -85,8 +86,20 @@ const LoginScreen: React.FC = () => {
         }
     )
 
-    return (
-        <KeyboardAvoidingView className='flex-1' behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    return verifyViewVisible ? (
+        <View className={'flex-1'}>
+            <Button
+                variant={'outline'}
+                size={'icon'}
+                className='absolute top-4 left-4 z-10 rounded-full'
+                onPress={() => setVerifyViewVisible(false)}
+            >
+                <Icon as={ChevronLeftIcon} />
+            </Button>
+            <VerifyCameraView />
+        </View>
+    ) : (
+        <KeyboardAvoidingView className={'flex-1'} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps='handled'>
                 <View className='bg-muted flex-1 justify-center gap-4 px-4'>
                     <Pressable onPress={() => router.push('/')}>
@@ -140,7 +153,7 @@ const LoginScreen: React.FC = () => {
                         <View className='bg-border h-px flex-1' />
                     </View>
 
-                    <Button variant='outline' className='block' size={'lg'}>
+                    <Button variant='outline' className='block' size={'lg'} onPress={() => setVerifyViewVisible(true)}>
                         <Icon as={ScanQrCodeIcon} />
                         <Text>Xác minh</Text>
                     </Button>
