@@ -63,7 +63,7 @@ export default function ProgressSteps({ stepNames, nowStep, isError = false }: P
                 return (
                     <View key={index}>
                         {/* Step Row */}
-                        <View className='flex-row items-center gap-3'>
+                        <View className='flex-row items-center gap-4'>
                             {/* Left: Icon + Connector Column */}
                             <StepIcon stepNumber={stepNumber} status={status} />
 

@@ -27,7 +27,7 @@ const VerifyReceiptScreen: React.FC = () => {
                 style={{ flex: 1 }}
                 contentContainerStyle={{ padding: 16, paddingBottom: 12 }}
             >
-                <View className='gap-3'>
+                <View className='gap-4'>
                     <ScreenHeader title='Kết quả xác minh' />
                     <ReceiptResult receipt={buildReceipt({ voteId, electionId, blindedCommitment, blockchainRef })} />
 

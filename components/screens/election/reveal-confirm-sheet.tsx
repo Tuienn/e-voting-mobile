@@ -12,7 +12,7 @@ interface Props {
 
 const RevealConfirmSheet: React.FC<Props> = ({ onConfirm, loading }) => {
     return (
-        <View className='gap-3 p-4'>
+        <View className='gap-4 p-4'>
             <Text className='text-center' variant={'large'}>
                 Tiết lộ lá phiếu
             </Text>

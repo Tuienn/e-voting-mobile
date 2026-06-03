@@ -19,8 +19,8 @@ const CandidateResult: React.FC<Props> = ({ name, dbCount, dbTotal, chainCount, 
     const avatarUrl = useMemo(() => randomAvatar(), [])
 
     return (
-        <View className='bg-card border-border gap-3 rounded-lg border p-4'>
-            <View className='flex-row items-center gap-3'>
+        <View className='bg-card border-border gap-4 rounded-lg border p-4'>
+            <View className='flex-row items-center gap-4'>
                 <Avatar alt={name} className='border-muted size-10 border-2'>
                     <AvatarImage source={{ uri: avatarUrl }} />
                     <AvatarFallback>

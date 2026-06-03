@@ -113,7 +113,7 @@ const ElectionDetailScreen: React.FC = () => {
                 contentContainerStyle={{ padding: 16, paddingBottom: 12 }}
                 refreshControl={<RefreshControl refreshing={false} onRefresh={queryElectionById.mutate} />}
             >
-                <View className='gap-3'>
+                <View className='gap-4'>
                     <ScreenHeader title='Chi tiết cuộc bầu cử' />
 
                     {queryElectionById.error ? (
@@ -192,7 +192,7 @@ const ElectionDetailScreen: React.FC = () => {
             )}
 
             <BottomSheetModal open={voteSheetVisible} onClose={() => setVoteSheetVisible(false)}>
-                <View className='gap-3 p-4'>
+                <View className='gap-4 p-4'>
                     <Text className='text-center' variant={'large'}>
                         Xác nhận bỏ phiếu
                     </Text>

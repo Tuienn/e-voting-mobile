@@ -59,7 +59,7 @@ const FlatListHeader: React.FC<Props> = ({
     const openLater = (open: () => void) => setTimeout(open, 150)
 
     return (
-        <View className='mb-3 gap-3'>
+        <View className='mb-3 gap-4'>
             <View className='flex flex-row items-center'>
                 <View className='flex-1'>
                     <Text className='text-2xl font-semibold'>Bầu cử</Text>

@@ -145,7 +145,7 @@ const VerifyCameraView = forwardRef<VerifyCameraViewRef, Props>(({ onChangeListV
                         </View>
                     </>
                 ) : (
-                    <View className='bg-background flex-1 items-center justify-center gap-3 p-6'>
+                    <View className='bg-background flex-1 items-center justify-center gap-4 p-6'>
                         {isWeb ? (
                             <>
                                 <Text variant='large'>Quét mã QR</Text>

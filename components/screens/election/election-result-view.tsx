@@ -25,7 +25,7 @@ const ElectionResultView: React.FC<Props> = ({ electionId }) => {
             <AlertDescription>{queryTally.error.message ?? 'Đã xảy ra lỗi khi tải kết quả'}</AlertDescription>
         </Alert>
     ) : tally ? (
-        <View className='gap-3'>
+        <View className='gap-4'>
             <ElectionPill
                 name={tally.election.name}
                 status={tally.election.status}

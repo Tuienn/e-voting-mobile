@@ -29,7 +29,7 @@ const CandidateCheckbox: React.FC<Props> = ({ candidateId, name, email, isSelect
         >
             <View
                 className={cn(
-                    'flex-row gap-3 rounded-lg border p-4',
+                    'flex-row gap-4 rounded-lg border p-4',
                     isSelected ? 'border-primary bg-primary/10' : 'border-border bg-card',
                     disabled && 'opacity-50'
                 )}

@@ -88,7 +88,7 @@ const ReceiptResult: React.FC<Props> = ({ receipt }) => {
     const result: VerifyReceiptResult | undefined = data?.data
 
     return (
-        <View className='gap-3'>
+        <View className='gap-4'>
             <View className='bg-card border-border items-center gap-2 rounded-lg border p-4'>
                 <View className='rounded-lg bg-white p-3'>
                     <QRCode value={encodeReceipt(receipt)} size={220} />

@@ -20,7 +20,7 @@ const CandidateSelectedItem: React.FC<Candidate> = ({ name, email }) => {
     }, [])
 
     return (
-        <View className={'border-primary bg-primary/10 flex-row gap-3 rounded-lg border px-4 py-4'}>
+        <View className={'border-primary bg-primary/10 flex-row gap-4 rounded-lg border px-4 py-4'}>
             <Avatar alt={name} className='border-muted size-10 border-2'>
                 <AvatarImage
                     source={{

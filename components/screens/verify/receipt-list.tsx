@@ -28,7 +28,7 @@ const ReceiptList: React.FC<ReceiptListProps> = ({ enabled, onClose }) => {
     }
 
     return (
-        <View className='gap-3 p-4'>
+        <View className='gap-4 p-4'>
             <Text className='text-center' variant={'large'}>
                 Biên lai của tôi
             </Text>

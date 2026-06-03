@@ -60,7 +60,7 @@ const VoteFlowScreen: React.FC = () => {
                     <RefreshControl refreshing={false} onRefresh={!voteFlow.error ? undefined : handleVote} />
                 }
             >
-                <View className='gap-3'>
+                <View className='gap-4'>
                     <ScreenHeader title='Quy trình bỏ phiếu' disabledBackButton={voteFlow.isProcessing} />
                     {!voteFlow.error && (
                         <LargeNotification

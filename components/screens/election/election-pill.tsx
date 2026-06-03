@@ -35,7 +35,7 @@ const ElectionPill: React.FC<Props> = ({ startDate, endDate, name, status, candi
     }, [])
 
     return (
-        <Card className='gap-3 py-4'>
+        <Card className='gap-4 py-4'>
             <CardHeader className='px-4'>
                 <View className='flex-row items-center justify-between gap-2'>
                     <Badge variant={'default'} className={`${STATUS_MAP[status].className}`}>
