@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { clearAllSecureData, collectVoteSecretsForBackup } from '@/lib/secure-store'
 import { encryptBackup } from '@/lib/backup-crypto'
 import BackupService from '@/services/bff/backup.service'
+import { runAfterIdle } from '@/lib/utils'
 
 //NOTE - Mã hóa toàn bộ vote-secret bằng PIN rồi đẩy lên server, sau đó đăng xuất.
 export const useLogoutBackup = () => {
@@ -21,7 +22,7 @@ export const useLogoutBackup = () => {
         (pin: string) => {
             setProcessing(true)
 
-            const idleCallbackId = requestIdleCallback(async () => {
+            return runAfterIdle(async () => {
                 try {
                     const secrets = await collectVoteSecretsForBackup()
 
@@ -45,8 +46,6 @@ export const useLogoutBackup = () => {
                     })
                 }
             })
-
-            return () => cancelIdleCallback(idleCallbackId)
         },
         [finishLogout]
     )

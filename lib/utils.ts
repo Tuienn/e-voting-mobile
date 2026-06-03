@@ -28,3 +28,12 @@ const AVATARS = [
 ]
 
 export const randomAvatar = () => AVATARS[Math.floor(Math.random() * AVATARS.length)]
+
+export const runAfterIdle = (callback: () => void): (() => void) => {
+    if (typeof requestIdleCallback !== 'undefined') {
+        const id = requestIdleCallback(callback)
+        return () => cancelIdleCallback(id)
+    }
+    const id = setTimeout(callback, 0)
+    return () => clearTimeout(id)
+}

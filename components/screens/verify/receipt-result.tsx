@@ -45,7 +45,7 @@ function SectionItem({
         <AccordionItem
             value={value}
             className={cn(
-                'mb-2 rounded-lg border',
+                'mt-3 rounded-lg border',
                 valid
                     ? 'border-green-300 bg-green-50 dark:border-green-700 dark:bg-green-900/20'
                     : 'border-destructive/50 bg-destructive/10 dark:bg-destructive/20'
@@ -109,7 +109,7 @@ const ReceiptResult: React.FC<Props> = ({ receipt }) => {
                     <AlertDescription>{(error as Error).message}</AlertDescription>
                 </Alert>
             ) : result ? (
-                <Accordion type='multiple' defaultValue={[]}>
+                <Accordion type='multiple' defaultValue={[]} className='-mt-3'>
                     <SectionItem
                         value='db'
                         valid={result.db.valid}

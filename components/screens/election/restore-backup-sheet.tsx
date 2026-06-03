@@ -26,7 +26,7 @@ const RestoreBackupSheet: React.FC<Props> = ({ open, onClose }) => {
 
     return (
         <BottomSheetModal open={open} onClose={() => !processing && onClose()}>
-            <View className='gap-4 px-4'>
+            <View className='gap-4 p-4'>
                 <Alert variant='warning' icon={DatabaseBackupIcon}>
                     <AlertTitle>Khôi phục dữ liệu phiếu bầu</AlertTitle>
                     <AlertDescription>

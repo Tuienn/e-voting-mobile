@@ -1,7 +1,7 @@
 import LargeNotification from '@/components/common/large-notification'
 import ScreenHeader from '@/components/common/screen-header'
 import ProgressSteps from '@/components/screens/election/progress-steps'
-import ReceiptResult from '@/components/screens/receipt/receipt-result'
+import ReceiptResult from '@/components/screens/verify/receipt-result'
 import { Alert, AlertTitle } from '@/components/ui/alert'
 import useVoteFlow from '@/hooks/use-vote-flow'
 import { buildReceipt } from '@/lib/receipt-qr'

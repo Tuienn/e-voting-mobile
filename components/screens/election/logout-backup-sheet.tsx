@@ -26,7 +26,7 @@ const LogoutBackupSheet: React.FC<Props> = ({ open, onClose }) => {
 
     return (
         <BottomSheetModal open={open} onClose={() => !processing && onClose()}>
-            <View className='gap-4 px-4'>
+            <View className='gap-4 p-4'>
                 <Alert icon={KeyRoundIcon} variant='warning'>
                     <AlertTitle>Sao lưu trước khi đăng xuất</AlertTitle>
                     <AlertDescription>

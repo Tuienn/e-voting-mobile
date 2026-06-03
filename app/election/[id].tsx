@@ -79,7 +79,7 @@ const ElectionDetailScreen: React.FC = () => {
     const handleVerify = () => {
         if (!vote) return
         router.push({
-            pathname: '/election/verify-result',
+            pathname: '/verify/receipt',
             params: {
                 voteId: vote.id,
                 electionId: id,
@@ -192,7 +192,7 @@ const ElectionDetailScreen: React.FC = () => {
             )}
 
             <BottomSheetModal open={voteSheetVisible} onClose={() => setVoteSheetVisible(false)}>
-                <View className='gap-3 px-4'>
+                <View className='gap-3 p-4'>
                     <Text className='text-center' variant={'large'}>
                         Xác nhận bỏ phiếu
                     </Text>

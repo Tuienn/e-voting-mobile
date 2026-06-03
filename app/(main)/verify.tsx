@@ -1,12 +1,13 @@
 import BottomSheetModal from '@/components/common/bottom-sheet-modal'
-import ReceiptList from '@/components/screens/receipt/receipt-list'
+import ReceiptList from '@/components/screens/verify/receipt-list'
 import { useCallback, useRef, useState } from 'react'
 import VerifyCameraView, { VerifyCameraViewRef } from '@/components/common/verify-camera-view'
 import { useScrollDirection } from '@/hooks/use-scroll-direction'
-import { useFocusEffect } from 'expo-router'
+import { router, useFocusEffect } from 'expo-router'
 import { withTiming } from 'react-native-reanimated'
-import { View } from 'react-native'
-import { Text } from '@/components/ui/text'
+import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
+import { ChevronLeftIcon } from 'lucide-react-native'
 
 const VerifyScreen: React.FC = () => {
     const [listVisible, setListVisible] = useState(false)
@@ -27,14 +28,15 @@ const VerifyScreen: React.FC = () => {
 
     return (
         <>
-            {/* Header */}
-            <View pointerEvents='none' className='absolute right-0 left-0 px-4 pt-4'>
-                <Text className='text-2xl font-bold text-white'>Quét mã</Text>
-
-                <Text className='text-white/80'>Xác minh phiếu bầu bằng mã QR trên biên nhận.</Text>
-            </View>
+            <Button
+                variant={'outline'}
+                size={'icon'}
+                className='absolute top-4 left-4 z-10 rounded-full'
+                onPress={() => router.back()}
+            >
+                <Icon as={ChevronLeftIcon} />
+            </Button>
             <VerifyCameraView onChangeListVisible={setListVisible} ref={cameraRef} />
-
             <BottomSheetModal open={listVisible} onClose={() => setListVisible(false)}>
                 <ReceiptList onClose={() => setListVisible(false)} enabled={listVisible} />
             </BottomSheetModal>

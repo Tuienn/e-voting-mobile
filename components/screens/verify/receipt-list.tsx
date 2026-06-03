@@ -17,7 +17,7 @@ const ReceiptList: React.FC<ReceiptListProps> = ({ enabled, onClose }) => {
     const openReceipt = (vote: NonNullable<(typeof voted)[number]['vote']>) => {
         onClose()
         router.push({
-            pathname: '/election/verify-result',
+            pathname: '/verify/receipt',
             params: {
                 voteId: vote.id,
                 electionId: vote.electionId,

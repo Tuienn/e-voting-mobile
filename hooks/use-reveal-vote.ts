@@ -59,7 +59,7 @@ const useRevealVote = (params: RevealVoteParams) => {
                 })
 
                 router.replace({
-                    pathname: '/election/verify-result',
+                    pathname: '/verify/receipt',
                     params: {
                         voteId: vote.id,
                         electionId: vote.electionId,

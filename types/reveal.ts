@@ -1,3 +1,5 @@
+import { Election } from './election'
+
 export interface RevealVoteResult {
     id: string
     electionId: string
@@ -16,9 +18,9 @@ export interface TallyCandidateResult {
 }
 
 export interface TallyResult {
-    electionId: string
-    electionName: string
-    status: string
+    election: Pick<Election, 'id' | 'name' | 'status' | 'endDate'> & {
+        startDate: string
+    }
     tallyResult: TallyCandidateResult[]
     // Số phiếu đã reveal (mỗi lá phiếu đếm đúng 1 lần)
     dbRevealedBallots: number

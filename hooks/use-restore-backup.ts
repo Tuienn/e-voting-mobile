@@ -3,17 +3,8 @@ import { useCallback, useState } from 'react'
 import { decryptBackup } from '@/lib/backup-crypto'
 import { restoreVoteSecretsFromBackup } from '@/lib/secure-store'
 import BackupService from '@/services/bff/backup.service'
+import { runAfterIdle } from '@/lib/utils'
 import { VoteSecretBackupMap } from '@/types/backup'
-
-const runAfterIdle = (callback: () => void) => {
-    if (typeof requestIdleCallback !== 'undefined') {
-        const id = requestIdleCallback(callback)
-        return () => cancelIdleCallback(id)
-    }
-
-    const id = setTimeout(callback, 0)
-    return () => clearTimeout(id)
-}
 
 //NOTE - Tải envelope từ server, giải mã bằng PIN (sai PIN → GCM fail) rồi ghi lại vào SecureStore
 export const useRestoreBackup = (onDone?: () => void) => {

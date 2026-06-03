@@ -47,7 +47,7 @@ const VerifyCameraView = forwardRef<VerifyCameraViewRef, Props>(({ onChangeListV
         try {
             const receipt = parseReceipt(data)
             router.push({
-                pathname: '/election/verify-result',
+                pathname: '/verify/receipt',
                 params: {
                     voteId: receipt.voteId,
                     electionId: receipt.electionId,
